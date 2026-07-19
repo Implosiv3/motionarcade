@@ -1,0 +1,29 @@
+.mode-selector {
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    border-radius: 50%;
+    border: 1px solid #ccc;
+
+    cursor: pointer;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+
+    &.light {
+        background: #fff;
+        color: #222;
+    }
+
+    &.dark {
+        background: #222;
+        color: #fff;
+        border-color: #444;
+    }
+}

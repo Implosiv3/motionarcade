@@ -1,0 +1,4 @@
+1. Install node and npm
+2. Authorize powershell: `$ Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned`
+3. Initialize project in a temporary folder: `$ npm create vite@latest temp-react -- --template react-ts`
+4. Remove repeated (conflictive) files and move back to the root folder. Remove the temporary 'temp-react' folder.

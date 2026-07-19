@@ -1,0 +1,1 @@
+The actual state of the application.
