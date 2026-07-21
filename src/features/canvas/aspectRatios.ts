@@ -1,5 +1,6 @@
 import type { AspectRatio } from "./aspectRatio";
 
+
 export const ASPECT_RATIOS: AspectRatio[] = [
   {
     id: "16:9",

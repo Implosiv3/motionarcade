@@ -1,9 +1,9 @@
 import { ASPECT_RATIOS } from "../../../../features/canvas/aspectRatios";
 import { useCanvasStore } from "../../../../store/canvasStore";
-import "./AspectRatioSelector.scss"
+import "./CanvasAspectRatioSelector.scss"
 
 
-export function AspectRatioSelector() {
+export default function CanvasAspectRatioSelector() {
   const aspectRatio = useCanvasStore(state => state.canvas.aspectRatio);
   const setAspectRatio = useCanvasStore(state => state.setAspectRatio);
 

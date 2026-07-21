@@ -1,0 +1,44 @@
+.preview-actions {
+  width: min(480px, 88vw);
+
+  display: flex;
+  gap: 12px;
+}
+
+.action-button {
+  flex: 1;
+
+  height: 44px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  background: white;
+  cursor: pointer;
+
+  font-size: 14px;
+  font-weight: 500;
+
+  transition:
+    background 0.15s,
+    border-color 0.15s,
+    transform 0.15s;
+}
+
+.action-button:hover {
+  background: #f9fafb;
+}
+
+.action-button:active {
+  transform: translateY(1px);
+}
+
+.action-button.primary {
+  background: #111827;
+  color: white;
+  border-color: #111827;
+}
+
+.action-button.primary:hover {
+  background: #1f2937;
+}

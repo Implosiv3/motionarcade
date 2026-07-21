@@ -11,7 +11,7 @@ export interface PngExportOptions {
 export async function htmlToPng2d(
     ref: RefObject<HTMLElement | null>,
     {
-        pixelRatio = 3,
+        pixelRatio = 6,
         doTrimToBoundingBox = true,
     }: PngExportOptions = {}
     // pixelRatio = 3,
@@ -30,10 +30,10 @@ export async function htmlToPng2d(
         }
     );
 
-    if (doTrimToBoundingBox) {
-        const trimmedDataUrl = await trimTransparentPng(dataUrl);
-        dataUrl = trimmedDataUrl
-    }
+    // if (doTrimToBoundingBox) {
+    //     const trimmedDataUrl = await trimTransparentPng(dataUrl);
+    //     dataUrl = trimmedDataUrl
+    // }
     
 
     return dataUrl.replace(/^data:image\/png;base64,/, "");

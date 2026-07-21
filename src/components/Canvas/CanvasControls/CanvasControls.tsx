@@ -1,12 +1,12 @@
 import "./CanvasControls.scss";
-import { AspectRatioSelector } from "./AspectRatioSelector/AspectRatioSelector";
+import CanvasAspectRatioSelector from "./CanvasAspectRatioSelector/CanvasAspectRatioSelector";
 import ModeSelector from "./ModeSelector/ModeSelector";
 
 
 export default function CanvasControls() {
     return (
         <div className="canvas-controls">
-            <AspectRatioSelector></AspectRatioSelector>
+            <CanvasAspectRatioSelector></CanvasAspectRatioSelector>
             <ModeSelector></ModeSelector>
         </div>
     );

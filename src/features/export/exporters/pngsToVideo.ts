@@ -1,6 +1,7 @@
-import { waitAnimationRender } from "../animation/utils";
-import { useAnimationStore } from "../animation/AnimationStore"
+import { waitAnimationRender } from "../../../utils/animation";
+import { useAnimationStore } from "../../animation/store/animationStore"
 import { getFfmpeg } from "../../../utils/ffmpeg";
+import { output } from "three/src/nodes/core/PropertyNode.js";
 
 // type ExportPngFn = (
 //     doTrimToBoundingBox: boolean
@@ -27,6 +28,13 @@ export async function exportPngsToVideo({
         setFrame
     } = useAnimationStore.getState();
 
+    /*
+    We will obtain the bounding box that includes
+    the non-transparent content of all the frames
+    by getting the maximum bounding box corner
+    pixels coordinates.
+    */
+    const doTrimToBoundingBox = true
     // We will crop the result
     let globalMinX = Infinity;
     let globalMinY = Infinity;
@@ -38,66 +46,99 @@ export async function exportPngsToVideo({
         await waitAnimationRender();
 
         const png = await exportPngFunction({
+            // pixelRatio: exportQuality.scaleFactor
+            pixelRatio: 1.5,
             doTrimToBoundingBox: false
         });
         const bytes = Uint8Array.from(atob(png), (c) => c.charCodeAt(0));
 
-        const bounds = await getPngBounds(png);
+        if (doTrimToBoundingBox) {
+            // Get bounding box of this frame
+            const bounds = await getPngBounds(png);
 
-        globalMinX = Math.min(globalMinX, bounds.minX);
-        globalMinY = Math.min(globalMinY, bounds.minY);
+            globalMinX = Math.min(globalMinX, bounds.minX);
+            globalMinY = Math.min(globalMinY, bounds.minY);
 
-        globalMaxX = Math.max(globalMaxX, bounds.maxX);
-        globalMaxY = Math.max(globalMaxY, bounds.maxY);
-
+            globalMaxX = Math.max(globalMaxX, bounds.maxX);
+            globalMaxY = Math.max(globalMaxY, bounds.maxY);
+        }
+        
         await ffmpeg.writeFile(`frame${String(frame).padStart(5, "0")}.png`, bytes);
     }
 
-    const tmp_filename = "temp.mov"
+    let tmp_filename = outputFilename
+    if (doTrimToBoundingBox) {
+        tmp_filename = "temp.mov"
+    }
 
+    /*
+    We render the images with straight alpha, so
+    we need to premultiply it when creating the
+    video to be correctly handled by the editors.
+    Thats why we have 'premultiply=inplace=1'.
+    */
     await ffmpeg.exec([
         "-y",
         "-framerate",
         String(fps),
         "-i",
         "frame%05d.png",
-        "-c:v",
-        "prores_ks",
-        "-profile:v",
-        "4444",
-        "-pix_fmt",
-        "yuva444p10le",
-        tmp_filename,
-    ]);
-
-    const cropWidth = globalMaxX - globalMinX + 1;
-    const cropHeight = globalMaxY - globalMinY + 1;
-    const evenWidth = cropWidth - (cropWidth % 2);
-    const evenHeight = cropHeight - (cropHeight % 2);
-
-    await ffmpeg.exec([
-        "-y",
-        "-i",
-        tmp_filename,
+        // These 2 lines are to avoid white halos
         "-vf",
-        `crop=${evenWidth}:${evenHeight}:${globalMinX}:${globalMinY}`,
+        "premultiply=inplace=1",
         "-c:v",
         "prores_ks",
         "-profile:v",
         "4444",
         "-pix_fmt",
         "yuva444p10le",
-        outputFilename,
+        tmp_filename,
     ]);
-    
 
+    if (doTrimToBoundingBox) {
+        const cropWidth = globalMaxX - globalMinX + 1;
+        const cropHeight = globalMaxY - globalMinY + 1;
+        const evenWidth = cropWidth - (cropWidth % 2);
+        const evenHeight = cropHeight - (cropHeight % 2);
+
+        if (
+            !Number.isFinite(globalMinX) ||
+            !Number.isFinite(globalMinY) ||
+            !Number.isFinite(globalMaxX) ||
+            !Number.isFinite(globalMaxY)
+        ) {
+            throw new Error("No visible pixels found.");
+        }
+
+        ffmpeg.on("log", ({ message }) => {
+            console.log(message);
+        });
+
+        await ffmpeg.exec([
+            "-y",
+            "-i",
+            tmp_filename,
+            "-vf",
+            `crop=${evenWidth}:${evenHeight}:${globalMinX}:${globalMinY}`,
+            "-c:v",
+            "prores_ks",
+            "-profile:v",
+            "4444",
+            "-pix_fmt",
+            "yuva444p10le",
+            outputFilename,
+        ]);
+    }
+    
     const data = await ffmpeg.readFile(outputFilename);
+    // const data = await ffmpeg.readFile(tmp_filename);
     const blob = new Blob([data as Uint8Array], { type: "video/quicktime" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
 
     a.href = url;
-    a.download = outputFilename;
+    // a.download = outputFilename;
+    a.download = tmp_filename;
     a.click();
 
     URL.revokeObjectURL(url);
