@@ -1,14 +1,21 @@
+// import PopMessage from "../../components/resources/2d/general/PopMessage";
 import Canvas from "../../components/Canvas/Canvas";
-import PopMessage from "../../components/resources/2d/general/PopMessage";
+import { VoxelSprite3D } from "../../components/resources/3d/general/VoxelSprite3D";
 // import StarsRating from "../../components/resources/2d/rating/stars/StarsRating";
 // import WhatsAppMessage from "../../components/resources/2d/whatsapp/WhatsAppMessage";
 
 export default function MainView() {
+  /*
+  We need to set '2d' or '3d' depending on
+  the component we will put inside.
+  */
   return (
-    <Canvas aspectRatio={16/9}>
-      <PopMessage
+    <Canvas type="3d">
+      <VoxelSprite3D
+        imageUrl="/coin.png" />
+      {/* <PopMessage
         text="AI is amazing"
-      />
+      /> */}
       {/* <StarsRating
         rating={4}
       /> */}

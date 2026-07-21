@@ -1,7 +1,7 @@
 import { useRef } from "react";
 import "./PopMessage.scss";
 import { useAnimationTimeline } from "../../../../features/animation/hooks/useAnimationTimeline";
-import { entranceAnimations } from "../../../../features/animation/presets";
+import { entranceAnimations } from "../../../../features/animation/dom/presets";
 
 
 type PopMessageProps = {

@@ -16,7 +16,6 @@ export const entranceAnimations = {
         );
     },
 
-
     slideUp(
         tl: gsap.core.Timeline,
         target: Element
