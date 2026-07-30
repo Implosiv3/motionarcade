@@ -1,8 +1,8 @@
-// import PopMessage from "../../components/resources/2d/general/PopMessage";
+import PopMessage from "../../components/resources/2d/general/PopMessage";
 import Canvas from "../../components/Canvas/Canvas";
 // import { VoxelSprite3D } from "../../components/resources/3d/general/VoxelSprite3D";
 // import StarsRating from "../../components/resources/2d/rating/stars/StarsRating";
-import WhatsAppMessage from "../../components/resources/2d/whatsapp/WhatsAppMessage";
+// import WhatsAppMessage from "../../components/resources/2d/whatsapp/WhatsAppMessage";
 
 export default function MainView() {
   /*
@@ -14,18 +14,18 @@ export default function MainView() {
       {/* <VoxelSprite3D
         imageUrl="/favicon.svg"
       /> */}
-      {/* <PopMessage
+      <PopMessage
         text="AI is amazing"
-      /> */}
+      />
       {/* <StarsRating
         rating={4}
       /> */}
-      <WhatsAppMessage
+      {/* <WhatsAppMessage
         text="holaaa"
         time="08:33"
         direction="sent"
         checkStatus="sent"
-      />
+      /> */}
     </Canvas>
   );
 }
