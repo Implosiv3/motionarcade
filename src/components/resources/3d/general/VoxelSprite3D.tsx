@@ -5,20 +5,26 @@ import { useRef } from "react";
 import * as THREE from "three";
 import { VoxelSprite } from "../basic/VoxelSprite";
 import { useAnimationTimeline } from "../../../../features/animation/hooks/useAnimationTimeline";
+import type { ComponentMode } from "../../componentMode";
 
 
 type VoxelSprite3DProps = {
     imageUrl: string;
-    voxelSize?: number;
+    // voxelSize?: number;
     depth?: number;
 };
 
+type VoxelSprite3DType = React.FC<VoxelSprite3DProps> & {
+    canvas_mode: "3d";
+};
 
-export function VoxelSprite3D({
+
+
+export const VoxelSprite3D: VoxelSprite3DType = ({
     imageUrl,
-    voxelSize = 0.01,
+    // voxelSize = 0.01,
     depth = 15,
-}: VoxelSprite3DProps) {
+}: VoxelSprite3DProps) => {
 
     const ref = useRef<THREE.Group>(null);
 
@@ -78,9 +84,13 @@ export function VoxelSprite3D({
         <group ref={ref}>
             <VoxelSprite
                 imageUrl={imageUrl}
-                voxelSize={voxelSize}
+                // voxelSize={voxelSize}
                 depth={depth}
             />
         </group>
     );
-}
+};
+
+VoxelSprite3D.canvas_mode = "3d" satisfies ComponentMode;
+
+export default VoxelSprite3D;

@@ -4,9 +4,15 @@ import WhatsAppSentMessageTailSVG from "./svg/WhatsAppSentMessageTailSVG";
 import WhatsAppMessageStatusSVG from "./svg/WhatsAppMessageStatusSVG";
 import "./WhatsAppMessage.css";
 import { useAnimationStore } from "../../../../features/animation/store/animationStore";
+import type { ComponentMode } from "../../componentMode";
 
 
-export default function WhatsAppMessage({
+type WhatsAppMessageType =
+    React.FC<WhatsAppMessageProps> & {
+        canvas_mode: "2d";
+    };
+
+export const WhatsAppMessage: WhatsAppMessageType = ({
     text = "hello world!",
     time = "9:41",
     direction = 'sent',
@@ -15,7 +21,7 @@ export default function WhatsAppMessage({
         type: "typing",
         duration: 1
     },  
-}: WhatsAppMessageProps) {
+}: WhatsAppMessageProps) => {
     const { progress } = useAnimationStore();
 
     let visibleText =
@@ -56,3 +62,7 @@ export default function WhatsAppMessage({
         </div>
     );
 }
+
+WhatsAppMessage.canvas_mode = "2d" satisfies ComponentMode;
+
+export default WhatsAppMessage;

@@ -1,7 +1,7 @@
 services:
 
-  motionacademy:
-    image: motionacademy
+  motionarcade:
+    image: motionarcade
     build:
       context: .
       dockerfile: dockerfile

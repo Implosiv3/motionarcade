@@ -12,32 +12,35 @@ type Group = {
 
 type Props = {
   imageUrl: string;
-  voxelSize?: number;
+  // voxelSize?: number;
+  targetSize?: number;
   depth?: number;
 };
 
 export function VoxelSprite({
   imageUrl,
-  voxelSize = 0.1,
+  // voxelSize = 0.1,
+  targetSize = 1,
   depth = 1,
 }: Props) {
-  const [groups, setGroups] =
-    useState<Group[]>([]);
+  const [groups, setGroups] = useState<Group[]>([]);
+  const [scale, setScale] = useState(0.1);
 
   useEffect(() => {
     const img = new Image();
 
     img.onload = () => {
-      const canvas =
-        document.createElement("canvas");
+      const canvas = document.createElement("canvas");
 
       canvas.width = img.width;
       canvas.height = img.height;
 
-      const ctx =
-        canvas.getContext("2d")!;
+      const ctx = canvas.getContext("2d")!;
 
       ctx.drawImage(img, 0, 0);
+
+      // Make it fit in the canvas
+      setScale(targetSize / Math.max(img.width, img.height));
 
       const imageData =
         ctx.getImageData(
@@ -54,18 +57,9 @@ export function VoxelSprite({
         [number, number, number][]
       >();
 
-      for (
-        let y = 0;
-        y < img.height;
-        y++
-      ) {
-        for (
-          let x = 0;
-          x < img.width;
-          x++
-        ) {
-          const i =
-            (y * img.width + x) * 4;
+      for (let y = 0; y < img.height; y++) {
+        for (let x = 0; x < img.width; x++) {
+          const i = (y * img.width + x) * 4;
 
           const r = pixels[i];
           const g = pixels[i + 1];
@@ -106,7 +100,7 @@ export function VoxelSprite({
   }, [imageUrl]);
 
   return (
-    <group scale={voxelSize}>
+    <group scale={scale}>
       {groups.map(group => (
         <ColorInstances
           key={group.color}

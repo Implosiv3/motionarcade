@@ -1,7 +1,7 @@
 @echo off
 
 set /p VERSION=<VERSION
-set LIBRARY=motionacademy
+set LIBRARY=motionarcade
 set IMAGE_NAME=%LIBRARY%:%VERSION%
 
 echo Version detected (from VERSION file): %VERSION%

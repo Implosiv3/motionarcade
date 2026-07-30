@@ -2,15 +2,20 @@ import { useMemo, useRef } from "react";
 import { gsap } from "gsap";
 import "./StarsRating.scss";
 import { useAnimationTimeline } from "../../../../../features/animation/hooks/useAnimationTimeline";
+import type { ComponentMode } from "../../componentMode";
 
 
 interface StarsRatingProps {
     rating: 1 | 2 | 3 | 4 | 5;
 }
 
-export default function StarsRating({
+type StarsRatingType = React.FC<StarsRatingProps> & {
+    canvas_mode: "3d";
+};
+
+export const StarsRating: StarsRatingType = ({
     rating = 5,
-}: StarsRatingProps) {
+}: StarsRatingProps) => {
     const rootRef = useRef<HTMLDivElement>(null);
     const stars = useRef<HTMLDivElement[]>([]);
 
@@ -74,3 +79,7 @@ export default function StarsRating({
         </div>
     );
 }
+
+StarsRating.canvas_mode = "3d" satisfies ComponentMode;
+
+export default StarsRating;
