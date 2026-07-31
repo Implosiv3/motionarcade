@@ -1,5 +1,5 @@
 import "./Canvas.scss";
-import Canvas2D from "./Canvas2D";
+import Canvas2D from "./Canvas2D_old";
 import Canvas3D from "./Canvas3D";
 import { useRef, Children } from "react";
 import { useCanvasStore } from "../../store/canvasStore";

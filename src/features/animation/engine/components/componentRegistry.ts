@@ -1,0 +1,1 @@
+export const componentRegistry = new Map<string,React.ComponentType<any>>();

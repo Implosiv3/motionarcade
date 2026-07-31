@@ -1,0 +1,100 @@
+.progress-bar {
+  position: relative;
+
+  width: 400px;
+  height: 32px;
+
+  background: #1a1a1a;
+
+  border-radius: 999px;
+
+  overflow: hidden;
+
+  border: 1px solid rgba(255, 255, 255, 0.08);
+
+  /* box-shadow:
+    inset 0 2px 8px rgba(0, 0, 0, 0.4),
+    0 4px 4px rgba(0, 0, 0, 0.25); */
+
+  filter:
+    drop-shadow(
+    0 3px 3px rgba(0, 0, 0, 0.35)
+    )
+    drop-shadow(
+    0 3px 3px rgba(0, 0, 0, 0.25)
+    );
+}
+
+.progress-bar__fill {
+  position: relative;
+
+  width: 100%;
+  height: 100%;
+
+  overflow: hidden;
+
+  transform-origin: left center;
+
+  background: linear-gradient(
+    90deg,
+    #00d4ff,
+    #0099ff,
+    #0066ff
+  );
+}
+
+.progress-bar__shine {
+  position: absolute;
+  inset: 0;
+
+  background: linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.35),
+    rgba(255,255,255,0.05)
+  );
+
+  pointer-events: none;
+}
+
+.progress-bar__stripes {
+  position: absolute;
+
+  top: 0;
+  left: -200px;
+
+  /* This "width" can be modified if the speed
+  of the stripes is high but I think is enough */
+  width: calc(100% + 1200px);
+  height: 100%;
+
+  background-image:
+    repeating-linear-gradient(
+      -45deg,
+      rgba(255,255,255,0.18) 0px,
+      rgba(255,255,255,0.18) 12px,
+      transparent 12px,
+      transparent 24px
+    );
+
+  pointer-events: none;
+}
+
+.progress-bar__glow {
+  position: absolute;
+
+  right: 0;
+  top: 0;
+
+  width: 20px;
+  height: 100%;
+
+  background: radial-gradient(
+    circle,
+    rgba(255,255,255,0.45),
+    transparent 70%
+  );
+
+  filter: blur(10px);
+
+  pointer-events: none;
+}
