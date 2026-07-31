@@ -1,56 +1,40 @@
-$white-color: #d0d0d0;
-
-
-.canvas-container {
-    position: relative;
-
-    width: min(100%, calc(100vh * var(--aspect-ratio)));
-    height: min(100%, calc(100vh * var(--aspect-ratio)));
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    overflow: hidden;
-
-    flex-direction: column;
-    gap: 8px;
+.canvas-wrapper{
+    display:flex;
+    justify-content:center;
 }
 
-.canvas {
-    position: relative;
-
-    flex-shrink: 0;
-
-    width: min(100%, calc(100vh * var(--aspect-ratio)));
-    height: min(100%, calc(100vh * var(--aspect-ratio)));
-
-    width: 100%;
-    height: 100%;
-
-    display: flex;
-    justify-content: center;
-    align-items: center;
-
-    border-radius: 18px;
-    overflow: hidden;
-
-    background: transparent;
+.canvas-container{
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:10px;
 }
 
-.canvas-render-surface {
+.canvas{
     position:relative;
+
+    width:960px;
+    height:540px;
+
     overflow:hidden;
 
-    // display: flex;
-    // justify-content: center;
-    // align-items: center;
-    background: transparent;
-    // width: 100%;
-    // height: 100%;
+    border-radius:18px;
+
+    flex-shrink:0;
 }
 
-.canvas-light-mode {
+.canvas-render-surface{
+    position:relative;
+
+    width:1920px;
+    height:1080px;
+
+    overflow:hidden;
+
+    background:transparent;
+}
+
+.canvas-light-mode{
     background:
         conic-gradient(
             #fff 25%,
@@ -61,7 +45,7 @@ $white-color: #d0d0d0;
         0 0 / 32px 32px;
 }
 
-.canvas-dark-mode {
+.canvas-dark-mode{
     background:
         conic-gradient(
             #2b2b2b 25%,
