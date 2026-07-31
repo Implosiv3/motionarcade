@@ -1,7 +1,7 @@
 import PopMessage from "../../components/resources/2d/general/PopMessage_old";
-import Canvas from "../../components/Canvas/Canvas";
+// import Canvas from "../../components/Canvas/Canvas_old";
 import { testScene } from "../../features/animation/engine/scene/scenes/test";
-import Canvas2D from "../../components/Canvas/Canvas2D";
+import Canvas from "../../components/Canvas/Canvas";
 // import { VoxelSprite3D } from "../../components/resources/3d/general/VoxelSprite3D";
 // import StarsRating from "../../components/resources/2d/rating/stars/StarsRating";
 // import WhatsAppMessage from "../../components/resources/2d/whatsapp/WhatsAppMessage";
@@ -12,7 +12,7 @@ export default function MainView() {
   the component we will put inside.
   */
   return (
-    <Canvas2D
+    <Canvas
       scene={testScene}
     />
 

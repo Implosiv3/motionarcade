@@ -1,40 +1,28 @@
 import "./Canvas.scss";
-import Canvas2D from "./Canvas2D_old";
-import Canvas3D from "./Canvas3D";
-import { useRef, Children } from "react";
+import { useRef } from "react";
 import { useCanvasStore } from "../../store/canvasStore";
+import Canvas2D from "./Canvas2D";
 import CanvasControls from "./CanvasControls/CanvasControls";
 import AnimationControls from "./CanvasControls/AnimationControls/AnimationControls";
 import DownloadControls from "./CanvasControls/DownloadControls/DownloadControls";
 import { useHtmlToPng2d } from "../../features/export/hooks/useHtmlToPng2d";
+import type { SceneData } from "../../features/animation/engine/scene/sceneTypes";
 
-
-type CanvasComponent = React.ComponentType<any> & {
-    canvas_mode?: "2d" | "3d";
-};
 
 type CanvasProps = {
-    // type?: "2d" | "3d";
-    children: React.ReactElement;
+    scene:SceneData;
 };
 
 
 export default function Canvas({
-    // type = "2d",
-    children,
-}: CanvasProps) {
-    const aspectRatio = useCanvasStore(state => state.canvas.aspectRatio);
-    const mode = useCanvasStore(state => state.canvas.mode)
+    scene
+}:CanvasProps){
+    // const aspectRatio = useCanvasStore(state => state.canvas.aspectRatio);
+    const mode = useCanvasStore(state => state.canvas.mode);
     const exportQuality = useCanvasStore(state => state.canvas.exportQuality);
-    
-    const scale = 1.0
     const ref = useRef<HTMLDivElement>(null);
 
-    const child = Children.only(children);
-    const Component = child.type as CanvasComponent;
-
-    const canvas_mode = Component.canvas_mode ?? "2d";
-    // const canvas_mode = (children.type as any).canvas_mode ?? "2d";
+    const scale = 0.5;
 
     useHtmlToPng2d(
         ref,
@@ -42,42 +30,39 @@ export default function Canvas({
             pixelRatio: exportQuality.scaleFactor,
             doTrimToBoundingBox: false
         }
-    )
+    );
 
     return (
         <div className="canvas-wrapper">
-            <CanvasControls />
             <div className="canvas-container">
                 <div
-                    className={`canvas canvas-${mode}-mode`}
+                    className={
+                        `canvas canvas-${mode}-mode`
+                    }
                     id="canvas"
                     style={{
-                        width: aspectRatio.width,
-                        height: aspectRatio.height,
-                        transform: `scale(${scale})`,
-                        transformOrigin: "center",
+                        width: scene.width,
+                        height: scene.height,
+                        // aspectRatio: `${scene.width}/${scene.height}`
+                        transform:`scale(${scale})`,
+                        transformOrigin:"center"
                     }}
                 >
                     <div
                         className="canvas-render-surface"
+                        style={{
+                            width: scene.width,
+                            height: scene.height
+                        }}
                         ref={ref}
                     >
-                        {
-                            canvas_mode === "2d"
-                            ? (
-                                <Canvas2D>
-                                    {children}
-                                </Canvas2D>
-                            )
-                            :
-                            (
-                                <Canvas3D>
-                                    {children}
-                                </Canvas3D>
-                            )
-                        }
+                        <Canvas2D
+                            scene={scene}
+                        />
                     </div>
                 </div>
+
+                <CanvasControls />
                 <AnimationControls />
                 <DownloadControls />
             </div>

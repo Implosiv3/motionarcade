@@ -34,7 +34,7 @@ export async function exportPngsToVideo({
     by getting the maximum bounding box corner
     pixels coordinates.
     */
-    const doTrimToBoundingBox = true
+    const doTrimToBoundingBox = false
     // We will crop the result
     let globalMinX = Infinity;
     let globalMinY = Infinity;
@@ -47,7 +47,7 @@ export async function exportPngsToVideo({
 
         const png = await exportPngFunction({
             // pixelRatio: exportQuality.scaleFactor
-            pixelRatio: 1.5,
+            pixelRatio: 1.0,
             doTrimToBoundingBox: false
         });
         const bytes = Uint8Array.from(atob(png), (c) => c.charCodeAt(0));

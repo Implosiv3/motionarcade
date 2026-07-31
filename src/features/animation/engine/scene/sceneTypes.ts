@@ -2,31 +2,36 @@ import type { TimelineTrack } from "../timeline/TimelineTrack";
 
 
 export type SceneElementData = {
-    id:string;
-    type:string;
+    id: string;
+    type: string;
 
-    x:number;
-    y:number;
+    x: number;
+    y: number;
 
-    width?:number;
-    height?:number;
+    width?: number;
+    height?: number;
 
-    startFrame:number;
-    endFrame:number;
+    anchor?: {
+        x: number;
+        y: number;
+    };
 
-    props?:Record<string,any>;
-    tracks?:TimelineTrack[];
+    startFrame: number;
+    endFrame: number;
 
-    children?:SceneElementData[];
+    props?: Record<string,any>;
+    tracks?: TimelineTrack[];
+
+    children?: SceneElementData[];
 };
 
 
 export type SceneData = {
-    width:number;
-    height:number;
+    width: number;
+    height: number;
 
-    fps:number;
-    duration:number;
+    fps: number;
+    duration: number;
 
-    elements:SceneElementData[];
+    elements: SceneElementData[];
 };

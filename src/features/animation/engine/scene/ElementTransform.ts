@@ -1,6 +1,14 @@
 export type ElementTransform = {
-    x: number;
-    y: number;
+    position:{
+        x: number;
+        y: number;
+    };
+
+    offset:{
+        x: number;
+        y: number;
+    };
+
     scale: number;
     rotation: number;
     opacity: number;

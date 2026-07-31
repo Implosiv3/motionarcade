@@ -13,11 +13,58 @@ export const testScene = {
         {
             id:"bar",
             type:"ProgressBar",
-            x:300,
-            y:500,
+            x: 960,
+            y: 900,
+            // width:800,
+            // height:64,
             startFrame:0,
             endFrame:300,
+            anchor:{
+                x:0.5,
+                y:0.5
+            },
             tracks:[
+                {
+                    property:"scale",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:4
+                        },
+                        {
+                            frame:150,
+                            value:4
+                        }
+                    ]
+                },
+                {
+                    property: "position.x",
+                    easing:"easeOut",
+                    type:"number",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value: 900
+                        },
+                        {
+                            frame:60,
+                            value: 1000
+                        }
+                    ]
+                },
+                {
+                    property:"offset.y",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:-20
+                        },
+                        {
+                            frame:60,
+                            value:20
+                        }
+                    ]
+                },
                 {
                     property:"progress",
                     easing:"linear",
@@ -59,7 +106,7 @@ export const testScene = {
                     ]
                 },
                 {
-                    property:"x",
+                    property:"position.x",
                     type:"number",
                     easing:"easeOut",
                     keyframes:[

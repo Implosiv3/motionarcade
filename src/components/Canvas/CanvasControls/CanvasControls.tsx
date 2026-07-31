@@ -6,7 +6,7 @@ import ModeSelector from "./ModeSelector/ModeSelector";
 export default function CanvasControls() {
     return (
         <div className="canvas-controls">
-            <CanvasAspectRatioSelector></CanvasAspectRatioSelector>
+            {/* <CanvasAspectRatioSelector></CanvasAspectRatioSelector> */}
             <ModeSelector></ModeSelector>
         </div>
     );

@@ -16,11 +16,20 @@ export default function ProgressBar({
     stripesSpeed = 1,
 }: ProgressBarProps) {
   // Stripes speed
-  const stripesOffset = -(context.frame * stripesSpeed);
-  const progress = state.properties.progress ?? 0;
+    const stripesOffset = -(context.frame * stripesSpeed);
+    const progress = state.properties.progress ?? 0;
+    const {
+        width,
+        height
+    } = state.layout;
 
   return (
-    <div className="progress-bar">
+    <div
+        className="progress-bar"
+        style={{
+            width,
+            height
+        }}>
         <div
             className="progress-bar__fill"
             style={{

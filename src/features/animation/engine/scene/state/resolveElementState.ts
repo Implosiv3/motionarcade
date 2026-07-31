@@ -3,7 +3,6 @@ import { evaluateTracks } from "../../timeline/TimelineEvaluator";
 import type { SceneElementData } from "../sceneTypes";
 import { defaultElementState } from "./defaultElementState";
 
-
 export function resolveElementState(
     element: SceneElementData,
     context: RenderContext
@@ -14,15 +13,38 @@ export function resolveElementState(
             context.frame
         );
 
+console.log(
+    "evaluated tracks",
+    evaluated
+);
+
+    const positionX =
+        evaluated["position.x"] ??
+        element.x;
+
+    const positionY =
+        evaluated["position.y"] ??
+        element.y;
+
+    const offsetX =
+        evaluated["offset.x"] ??
+        0;
+
+    const offsetY =
+        evaluated["offset.y"] ??
+        0;
+
     const state = {
         transform:{
-            x:
-                element.x +
-                (evaluated.x ?? 0),
+            position:{
+                x: positionX,
+                y: positionY
+            },
 
-            y:
-                element.y +
-                (evaluated.y ?? 0),
+            offset:{
+                x: offsetX,
+                y: offsetY
+            },
 
             scale:
                 evaluated.scale ??
@@ -38,13 +60,35 @@ export function resolveElementState(
 
             visible:
                 evaluated.visible ??
-                defaultElementState.transform.visible
+                defaultElementState.transform.visible,
+        },
+
+        layout:{
+            width:element.width,
+            height:element.height,
+            anchor:
+                element.anchor
         },
 
         properties:{
             ...evaluated
         }
     };
+
+    console.log({
+    id:element.id,
+    elementX:element.x,
+    elementY:element.y,
+    positionX:evaluated["position.x"],
+    positionY:evaluated["position.y"],
+    offsetX:evaluated["offset.x"],
+    offsetY:evaluated["offset.y"]
+});
+
+console.log(
+    "FINAL STATE",
+    state
+);
 
     return state;
 }
