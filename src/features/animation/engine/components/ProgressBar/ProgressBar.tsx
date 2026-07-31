@@ -1,22 +1,22 @@
+import type { RenderContext } from "../../renderer/RenderContext";
+import type { ElementState } from "../../scene/state/ElementState";
 import "./ProgressBar.scss"
 
 
 type ProgressBarProps = {
-    state:{
-        properties:{
-            progress?:number;
-        };
-    };
-    stripesSpeed: number;
+    state: ElementState;
+    context: RenderContext;
+    stripesSpeed?:number;
 };
 
 
 export default function ProgressBar({
     state,
+    context,
     stripesSpeed = 1,
 }: ProgressBarProps) {
   // Stripes speed
-  const stripesOffset = -(state.frame * stripesSpeed);
+  const stripesOffset = -(context.frame * stripesSpeed);
   const progress = state.properties.progress ?? 0;
 
   return (

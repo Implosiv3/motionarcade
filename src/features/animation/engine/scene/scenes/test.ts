@@ -53,8 +53,38 @@ export const testScene = {
                             value:0
                         },
                         {
+                            frame:300,
+                            value:0.88
+                        }
+                    ]
+                },
+                {
+                    property:"x",
+                    type:"number",
+                    easing:"easeOut",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:-500
+                        },
+                        {
                             frame:150,
-                            value:0.5
+                            value:300
+                        }
+                    ]
+                },
+                {
+                    property:"rotation",
+                    type:"number",
+                    easing:"linear",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:-30
+                        },
+                        {
+                            frame:150,
+                            value:0
                         }
                     ]
                 }
