@@ -14,37 +14,31 @@ export async function htmlToPng2d(
         doTrimToBoundingBox = true,
     }: PngExportOptions = {}
 ) {
+
     if (!ref.current) {
         throw new Error("targetRef.current is null");
     }
 
-    const node = ref.current;
+    let dataUrl =
+        await toPng(
+            ref.current,
+            {
+                pixelRatio,
+                backgroundColor: "transparent",
+                cacheBust: true,
+            }
+        );
 
-    const previousTransform = node.style.transform;
-    const previousTransformOrigin = node.style.transformOrigin;
-
-    try {
-        // La preview está escalada únicamente para verse en pantalla.
-        // Para exportar queremos la escena a tamaño real.
-        node.style.transform = "none";
-        node.style.transformOrigin = "top left";
-
-        // Dejamos que el navegador aplique el cambio.
-        await new Promise(requestAnimationFrame);
-
-        let dataUrl = await toPng(node, {
-            pixelRatio,
-            backgroundColor: "transparent",
-            cacheBust: true,
-        });
-
-        if (doTrimToBoundingBox) {
-            dataUrl = await trimTransparentPng(dataUrl);
-        }
-
-        return dataUrl.replace(/^data:image\/png;base64,/, "");
-    } finally {
-        node.style.transform = previousTransform;
-        node.style.transformOrigin = previousTransformOrigin;
+    if (doTrimToBoundingBox) {
+        dataUrl =
+            await trimTransparentPng(
+                dataUrl
+            );
     }
+
+    return dataUrl.replace(
+        /^data:image\/png;base64,/,
+        ""
+    );
+
 }

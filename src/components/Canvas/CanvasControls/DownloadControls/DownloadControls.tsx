@@ -4,6 +4,8 @@ import { exportVideo } from "../../../../utils/export";
 import { useAnimationStore } from "../../../../features/animation/store/animationStore";
 import { waitAnimationRender } from "../../../../utils/animation";
 import DownloadExportQualitySelector from "./DownloadExportQualitySelector/DownloadExportQualitySelector";
+import { getExportNode } from "../../../../features/export/exportRegistry";
+import { withoutPreviewScale } from "../../../../features/export/utils/withoutPreviewScale";
 
 
 export default function DownloadControls() {
@@ -25,7 +27,13 @@ export default function DownloadControls() {
             return;
         }
 
-        const base64 = await window.exportPng();
+        const node = getExportNode();
+
+        const base64 =
+            await withoutPreviewScale(
+                node,
+                () => window.exportPng!()
+            );
 
         const link = document.createElement("a");
 

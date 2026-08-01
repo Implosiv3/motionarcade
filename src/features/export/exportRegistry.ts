@@ -1,24 +1,45 @@
+import type { PngExportOptions } from "./exporters/htmlToPng2d";
+
 declare global {
-  interface Window {
-    exportPng?: (
-      options?: ExportPngOptions
-    ) => Promise<string>;
-  }
+    interface Window {
+        exportPng?: (
+            options?: PngExportOptions
+        ) => Promise<string>;
+    }
 }
 
-type ExportPngOptions = {
-  pixelRatio?: number;
-  width?: number;
-  height?: number;
-  doTrimToBoundingBox?: boolean;
-};
+let exportNode: HTMLElement | null = null;
 
 export function registerExportPng(
-  fn: (...args: any[]) => Promise<string>
+    fn: (
+        options?: PngExportOptions
+    ) => Promise<string>
 ) {
-  window.exportPng = fn;
+    window.exportPng = fn;
 
-  return () => {
-    delete window.exportPng;
-  };
+    return () => {
+        delete window.exportPng;
+    };
+}
+
+export function registerExportNode(
+    node: HTMLElement
+) {
+    exportNode = node;
+
+    return () => {
+        exportNode = null;
+    };
+}
+
+export function getExportNode() {
+
+    if (!exportNode) {
+        throw new Error(
+            "No export node registered"
+        );
+    }
+
+    return exportNode;
+
 }
