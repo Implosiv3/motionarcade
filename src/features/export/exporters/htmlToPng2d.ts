@@ -2,7 +2,6 @@ import { type RefObject } from "react";
 import { toPng } from "html-to-image";
 import { trimTransparentPng } from "../utils/trimTransparentPng";
 
-
 export interface PngExportOptions {
     pixelRatio?: number;
     doTrimToBoundingBox?: boolean;
@@ -14,27 +13,38 @@ export async function htmlToPng2d(
         pixelRatio = 6,
         doTrimToBoundingBox = true,
     }: PngExportOptions = {}
-    // pixelRatio = 3,
-    // doTrimToBoundingBox = true,
 ) {
     if (!ref.current) {
         throw new Error("targetRef.current is null");
     }
 
-    let dataUrl = await toPng(
-        ref.current,
-        {
+    const node = ref.current;
+
+    const previousTransform = node.style.transform;
+    const previousTransformOrigin = node.style.transformOrigin;
+
+    try {
+        // La preview está escalada únicamente para verse en pantalla.
+        // Para exportar queremos la escena a tamaño real.
+        node.style.transform = "none";
+        node.style.transformOrigin = "top left";
+
+        // Dejamos que el navegador aplique el cambio.
+        await new Promise(requestAnimationFrame);
+
+        let dataUrl = await toPng(node, {
             pixelRatio,
             backgroundColor: "transparent",
             cacheBust: true,
+        });
+
+        if (doTrimToBoundingBox) {
+            dataUrl = await trimTransparentPng(dataUrl);
         }
-    );
 
-    // if (doTrimToBoundingBox) {
-    //     const trimmedDataUrl = await trimTransparentPng(dataUrl);
-    //     dataUrl = trimmedDataUrl
-    // }
-    
-
-    return dataUrl.replace(/^data:image\/png;base64,/, "");
+        return dataUrl.replace(/^data:image\/png;base64,/, "");
+    } finally {
+        node.style.transform = previousTransform;
+        node.style.transformOrigin = previousTransformOrigin;
+    }
 }
