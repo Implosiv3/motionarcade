@@ -17,12 +17,12 @@ export type TimelineItemState = {
     visible: boolean;
 
     /**
-     * Frame relativo dentro del componente.
+     * Frame according to component.
      */
     localFrame: number;
 
     /**
-     * Progreso 0-1 dentro de la vida del componente.
+     * Progress according to component's lifetime.
      */
     progress: number;
 };
@@ -45,14 +45,13 @@ export class TimelineEngine {
         }
 
         const localFrame = context.frame - item.startFrame;
-        const progress =
-            Math.max(
-                0,
-                Math.min(
-                    1,
-                    localFrame / duration
-                )
-            );
+        const progress = Math.max(
+            0,
+            Math.min(
+                1,
+                localFrame / duration
+            )
+        );
 
         return {
             visible,
@@ -66,9 +65,10 @@ export class TimelineEngine {
         context: RenderContext
     ) {
         return items.filter(
-            item =>
+            item => (
                 context.frame >= item.startFrame &&
                 context.frame <= item.endFrame
+            )
         );
     }
 }

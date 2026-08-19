@@ -8,8 +8,112 @@ export const testScene = {
 
     duration:300,
 
-
     elements:[
+        {
+            id: "message_1",
+            type: "DiscordMessage",
+            x: 960,
+            y: 300,
+            props: {
+                username: "Usuario",
+                timestamp: "hoy",
+                message: "caraculo"
+            },
+            startFrame: 0,
+            endFrame: 150,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: [
+                {
+                    property:"scale",
+                    easing: "easeInOutElastic",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:0
+                        },
+                        {
+                            frame:75,
+                            value:2
+                        }
+                    ]
+                },
+                {
+                    property:"rotation",
+                    type:"number",
+                    easing:"linear",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:-15
+                        },
+                        {
+                            frame:150,
+                            value:0
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            id: "message_2",
+            type: "BookingReview",
+            x: 960,
+            y: 600,
+            props: {
+                name: "Manuel",
+                country: "España",
+                score: "9.7",
+                scoreLabel: "Excelente",
+                title: "Increíble, repetiría 100%",
+                text: "Una auténtica pasada, tienes que venir sí o sí!",
+                date: "Ayer"
+            },
+            // props: {
+            //     username: "Usuario",
+            //     timestamp: "hoy",
+            //     message: "caraculo"
+            // },
+            startFrame: 0,
+            endFrame: 300,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: [
+                {
+                    property:"scale",
+                    easing: "easeInOutElastic",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:0
+                        },
+                        {
+                            frame:75,
+                            value:2
+                        }
+                    ]
+                },
+                {
+                    property:"rotation",
+                    type:"number",
+                    easing:"linear",
+                    keyframes:[
+                        {
+                            frame:0,
+                            value:-15
+                        },
+                        {
+                            frame:150,
+                            value:0
+                        }
+                    ]
+                }
+            ]
+        },
         {
             id:"bar",
             type:"ProgressBar",
@@ -18,7 +122,7 @@ export const testScene = {
             // width:800,
             // height:64,
             startFrame:0,
-            endFrame:300,
+            endFrame:120,
             anchor:{
                 x:0.5,
                 y:0.5
@@ -75,7 +179,7 @@ export const testScene = {
                             value:0
                         },
                         {
-                            frame:150,
+                            frame:120,
                             value:1
                         }
                     ]

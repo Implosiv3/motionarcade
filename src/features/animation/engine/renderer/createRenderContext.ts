@@ -1,12 +1,20 @@
 import type { RenderContext } from "./RenderContext";
 
 
+type RenderContextProps = {
+    frame: number;
+    fps: number;
+    width: number;
+    height: number;
+};
+
+
 export function createRenderContext({
     frame,
     fps,
     width,
     height
-}: Props): RenderContext {
+}: RenderContextProps): RenderContext {
     return {
         frame,
         fps,

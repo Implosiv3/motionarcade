@@ -22,7 +22,7 @@ import type {
 
 
 type CanvasProps = {
-    scene:SceneData;
+    scene: SceneData;
 };
 
 
@@ -30,25 +30,20 @@ export default function Canvas({
     scene
 }:CanvasProps){
 
-    const mode =
-        useCanvasStore(
-            state => state.canvas.mode
-        );
+    const mode = useCanvasStore(
+        state => state.canvas.mode
+    );
 
-    const exportQuality =
-        useCanvasStore(
-            state => state.canvas.exportQuality
-        );
+    const exportQuality = useCanvasStore(
+        state => state.canvas.exportQuality
+    );
 
-    const ref =
-        useRef<HTMLDivElement>(null);
+    const ref = useRef<HTMLDivElement>(null);
 
     const previewWidth = 960;
     const previewHeight = 540;
 
-    const scale =
-        previewWidth /
-        scene.width;
+    const scale = previewWidth / scene.width;
 
     useHtmlToPng2d(
         ref,
@@ -62,9 +57,7 @@ export default function Canvas({
 
     return (
         <div className="canvas-wrapper">
-
             <div className="canvas-container">
-
                 <div
                     className={`canvas canvas-${mode}-mode`}
                     style={{
@@ -72,7 +65,6 @@ export default function Canvas({
                         height:previewHeight
                     }}
                 >
-
                     <div
                         ref={ref}
                         className="canvas-render-surface"
@@ -83,23 +75,16 @@ export default function Canvas({
                             transformOrigin:"top left"
                         }}
                     >
-
                         <Canvas2D
                             scene={scene}
                         />
-
                     </div>
-
                 </div>
 
                 <CanvasControls />
-
                 <AnimationControls />
-
                 <DownloadControls />
-
             </div>
-
         </div>
     );
 }

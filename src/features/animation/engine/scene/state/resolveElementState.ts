@@ -5,45 +5,35 @@ import { defaultElementState } from "./defaultElementState";
 
 export function resolveElementState(
     element: SceneElementData,
-    context: RenderContext
-){
-    const evaluated =
-        evaluateTracks(
-            element.tracks ?? [],
-            context.frame
-        );
-
-console.log(
-    "evaluated tracks",
-    evaluated
-);
+    context: RenderContext,
+) {
+    const evaluated = evaluateTracks(
+        element.tracks ?? [],
+        context.frame,
+    );
 
     const positionX =
-        evaluated["position.x"] ??
-        element.x;
+        evaluated["position.x"] ?? element.x;
 
     const positionY =
-        evaluated["position.y"] ??
-        element.y;
+        evaluated["position.y"] ?? element.y;
 
     const offsetX =
-        evaluated["offset.x"] ??
-        0;
+        evaluated["offset.x"] ?? 0;
 
     const offsetY =
-        evaluated["offset.y"] ??
-        0;
+        evaluated["offset.y"] ?? 0;
 
-    const state = {
-        transform:{
-            position:{
+    return {
+        transform: {
+            position: {
                 x: positionX,
-                y: positionY
+                y: positionY,
             },
 
-            offset:{
+            offset: {
                 x: offsetX,
-                y: offsetY
+                y: offsetY,
             },
 
             scale:
@@ -63,32 +53,14 @@ console.log(
                 defaultElementState.transform.visible,
         },
 
-        layout:{
-            width:element.width,
-            height:element.height,
-            anchor:
-                element.anchor
+        layout: {
+            width: element.width,
+            height: element.height,
+            anchor: element.anchor,
         },
 
-        properties:{
-            ...evaluated
-        }
+        properties: {
+            ...evaluated,
+        },
     };
-
-    console.log({
-    id:element.id,
-    elementX:element.x,
-    elementY:element.y,
-    positionX:evaluated["position.x"],
-    positionY:evaluated["position.y"],
-    offsetX:evaluated["offset.x"],
-    offsetY:evaluated["offset.y"]
-});
-
-console.log(
-    "FINAL STATE",
-    state
-);
-
-    return state;
 }

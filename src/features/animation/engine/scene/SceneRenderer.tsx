@@ -1,98 +1,126 @@
+import {
+    AnimationElementProvider,
+} from "@implosiv3/fr8mer-components";
+
 import SceneNode from "./SceneNode";
 import SceneElement from "./SceneElement";
 
-import {
-    componentRegistry
-} from "../components/componentRegistry";
+import { componentRegistry } from "../components/componentRegistry";
+import { resolveElementState } from "./state/resolveElementState";
+import { resolveElementAnimationState } from "./state/resolveElementAnimationState";
 
-import {
-    resolveElementState
-} from "./state/resolveElementState";
-
-import type {
-    SceneElementData
-} from "./sceneTypes";
-
-import type {
-    RenderContext
-} from "../renderer/RenderContext";
-
+import type { SceneElementData } from "./sceneTypes";
+import type { RenderContext } from "../renderer/RenderContext";
+import { isElementAlive } from "./state/isElementAlive";
 
 type SceneRendererProps = {
     elements: SceneElementData[];
     context: RenderContext;
 };
 
-
 export default function SceneRenderer({
     elements,
-    context
+    context,
 }: SceneRendererProps) {
+    console.log(
+        "SCENE RENDER",
+        context.frame,
+        elements.map((element) => ({
+            id: element.id,
+            startFrame: element.startFrame,
+            endFrame: element.endFrame,
+        })),
+    );
+    
     return (
         <>
-            {
-                elements.map(
-                    element => {
-                        const state =
-                            resolveElementState(
-                                element,
-                                context
-                            );
+            {elements.map((element) => {
+                const state = resolveElementState(
+                    element,
+                    context,
+                );
 
-                        if (
-                            state.transform.visible === false
-                        ) {
-                            return null;
-                        }
+                console.log(
+                    "ELEMENT",
+                    element.id,
+                    "frame:",
+                    context.frame,
+                    "life:",
+                    element.startFrame,
+                    element.endFrame,
+                    "alive:",
+                    context.frame >= element.startFrame &&
+                    context.frame < element.endFrame,
+                );
 
-                        /*
-                         * Group
-                         */
-                        if (
-                            element.children &&
-                            element.children.length
-                        ) {
-                            return (
-                                <SceneNode
-                                    key={element.id}
-                                    state={state}
-                                >
-                                    <SceneRenderer
-                                        elements={element.children}
-                                        context={context}
-                                    />
-                                </SceneNode>
-                            );
-                        }
+                if (!isElementAlive(element, context.frame)) {
+                    return null;
+                }
 
-                        /*
-                         * Single component
-                         */
-                        const Component =
-                            componentRegistry.get(
-                                element.type
-                            );
+                if (state.transform.visible === false) {
+                    return null;
+                }
 
-                        if (!Component)
-                            return null;
+                const animationState =
+                    resolveElementAnimationState(
+                        element,
+                        context,
+                    );
 
-                        return (
+                /*
+                 * Group
+                 */
+                if (
+                    element.children &&
+                    element.children.length
+                ) {
+                    return (
+                        <AnimationElementProvider
+                            key={element.id}
+                            value={animationState}
+                        >
                             <SceneNode
-                                key={element.id}
                                 state={state}
                             >
-                                <SceneElement>
-                                    <Component
-                                        state={state}
-                                        context={context}
-                                        {...element.props}
-                                    />
-                                </SceneElement>
+                                <SceneRenderer
+                                    elements={element.children}
+                                    context={context}
+                                />
                             </SceneNode>
-                        );
-                    }
-                )
-            }
+                        </AnimationElementProvider>
+                    );
+                }
+
+                /*
+                 * Single component
+                 */
+                const Component = componentRegistry.get(
+                    element.type,
+                );
+
+                if (!Component) {
+                    return null;
+                }
+
+                return (
+                    <AnimationElementProvider
+                        key={element.id}
+                        value={animationState}
+                    >
+                        <SceneNode
+                            state={state}
+                        >
+                            <SceneElement>
+                                <Component
+                                    state={state}
+                                    context={context}
+                                    {...element.props}
+                                />
+                            </SceneElement>
+                        </SceneNode>
+                    </AnimationElementProvider>
+                );
+            })}
         </>
     );
 }

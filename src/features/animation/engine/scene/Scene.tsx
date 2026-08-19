@@ -2,7 +2,7 @@
 import React from "react";
 
 import { useCanvasStore } from "../../store/canvasStore";
-import { createRenderContext } from "../render/createRenderContext";
+import { createRenderContext } from "../renderer/createRenderContext";
 
 import SceneRenderer from "./SceneRenderer";
 
@@ -19,44 +19,19 @@ type SceneProps = {
 export default function Scene({
     data
 }: SceneProps) {
-
-
-    const currentFrame =
-        useCanvasStore(
-            state => state.animation.currentFrame
-        );
-
-
-    const fps =
-        useCanvasStore(
-            state => state.animation.fps
-        );
-
-
-    const context =
-        createRenderContext({
-
-            frame: currentFrame,
-
-            fps,
-
-            width:data.width,
-
-            height:data.height
-
-        });
-
-
+    const currentFrame = useCanvasStore(state => state.animation.currentFrame);
+    const fps = useCanvasStore(state => state.animation.fps);
+    const context = createRenderContext({
+        frame: currentFrame,
+        fps,
+        width:data.width,
+        height:data.height
+    });
 
     return (
-
         <SceneRenderer
-
             scene={data}
-
             context={context}
-
         />
-
     );
 }

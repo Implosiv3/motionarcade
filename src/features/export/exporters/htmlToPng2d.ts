@@ -30,10 +30,9 @@ export async function htmlToPng2d(
         );
 
     if (doTrimToBoundingBox) {
-        dataUrl =
-            await trimTransparentPng(
-                dataUrl
-            );
+        dataUrl = await trimTransparentPng(
+            dataUrl
+        );
     }
 
     return dataUrl.replace(

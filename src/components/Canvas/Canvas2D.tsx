@@ -1,56 +1,40 @@
-import {
-    createRenderContext
-} from "../../features/animation/engine/renderer/createRenderContext";
-
+import { createRenderContext } from "../../features/animation/engine/renderer/createRenderContext";
 import SceneRenderer from "../../features/animation/engine/scene/SceneRenderer";
-
-import type {
-    SceneData
-} from "../../features/animation/engine/scene/sceneTypes";
-
-import {
-    useAnimationStore
-} from "../../features/animation/store/animationStore";
+import type { SceneData } from "../../features/animation/engine/scene/sceneTypes";
+import { useAnimationStore } from "../../features/animation/store/animationStore";
+import { AnimationProvider } from "@implosiv3/fr8mer-components";
 
 
 type Canvas2DProps = {
-    scene:SceneData;
-
-    width:number;
-    height:number;
+    scene: SceneData;
 };
 
 
 export default function Canvas2D({
     scene,
-    width,
-    height
-}:Canvas2DProps){
+}: Canvas2DProps){
+    const frame = useAnimationStore(state => state.currentFrame);
+    const context = createRenderContext({
+        frame,
 
-    const frame =
-        useAnimationStore(
-            state => state.currentFrame
-        );
+        fps: scene.fps,
 
-    const context =
-        createRenderContext({
-
-            frame,
-
-            fps:scene.fps,
-
-            sceneWidth:scene.width,
-            sceneHeight:scene.height,
-
-            renderWidth:width,
-            renderHeight:height
-
-        });
+        width: scene.width,
+        height: scene.height,
+    });
 
     return (
-        <SceneRenderer
-            elements={scene.elements}
-            context={context}
-        />
+        <AnimationProvider
+            value={{
+                frame: context.frame,
+                fps: context.fps,
+                time: context.time,
+            }}
+        >
+            <SceneRenderer
+                elements={scene.elements}
+                context={context}
+            />
+        </AnimationProvider>
     );
 }

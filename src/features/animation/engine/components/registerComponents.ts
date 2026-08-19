@@ -1,22 +1,32 @@
+import PopMessage from "../../../../components/resources/2d/general/PopMessage";
 import { componentRegistry } from "./componentRegistry";
-import ProgressBar from "./ProgressBar/ProgressBar";
+import { DiscordMessage, BookingReview, SimpleProgressBar } from "@implosiv3/fr8mer-components"
 
 
-// import PopMessage from "../components/PopMessage/PopMessage";
 
 
 
 
 export function registerComponents(){
 
-    // componentRegistry.register(
-    //     "PopMessage",
-    //     PopMessage
-    // );
+    componentRegistry.set(
+        "PopMessage",
+        PopMessage
+    );
 
     componentRegistry.set(
         "ProgressBar",
-        ProgressBar
+        SimpleProgressBar
     );
+
+    componentRegistry.set(
+        "DiscordMessage",
+        DiscordMessage
+    )
+
+    componentRegistry.set(
+        "BookingReview",
+        BookingReview
+    )
 
 }

@@ -16,15 +16,15 @@ export function resolveKeyframes(
 
     if (frame <= sorted[0].frame) {
         return {
-            previous:sorted[0],
-            next:sorted[0]
+            previous: sorted[0],
+            next: sorted[0]
         };
     }
 
     if (frame >= sorted[sorted.length - 1].frame) {
         return {
-            previous:sorted[sorted.length - 1],
-            next:sorted[sorted.length - 1]
+            previous: sorted[sorted.length - 1],
+            next: sorted[sorted.length - 1]
         };
     }
 

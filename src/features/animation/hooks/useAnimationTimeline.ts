@@ -6,9 +6,7 @@ import { animationRegistry } from "../animationRegistry";
 
 type AnimationDefinition = {
     type: string;
-
     startFrame: number;
-
     endFrame: number;
 };
 
