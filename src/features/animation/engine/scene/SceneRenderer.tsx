@@ -3,7 +3,6 @@ import {
 } from "@implosiv3/fr8mer-components";
 
 import SceneNode from "./SceneNode";
-import SceneElement from "./SceneElement";
 
 import { componentRegistry } from "../components/componentRegistry";
 import { resolveElementState } from "./state/resolveElementState";
@@ -67,29 +66,29 @@ export default function SceneRenderer({
                         context,
                     );
 
-                /*
-                 * Group
-                 */
-                if (
-                    element.children &&
-                    element.children.length
-                ) {
-                    return (
-                        <AnimationElementProvider
-                            key={element.id}
-                            value={animationState}
-                        >
-                            <SceneNode
-                                state={state}
-                            >
-                                <SceneRenderer
-                                    elements={element.children}
-                                    context={context}
-                                />
-                            </SceneNode>
-                        </AnimationElementProvider>
-                    );
-                }
+                // /*
+                //  * Group
+                //  */
+                // if (
+                //     element.children &&
+                //     element.children.length
+                // ) {
+                //     return (
+                //         <AnimationElementProvider
+                //             key={element.id}
+                //             value={animationState}
+                //         >
+                //             <SceneNode
+                //                 state={state}
+                //             >
+                //                 <SceneRenderer
+                //                     elements={element.children}
+                //                     context={context}
+                //                 />
+                //             </SceneNode>
+                //         </AnimationElementProvider>
+                //     );
+                // }
 
                 /*
                  * Single component
@@ -110,13 +109,11 @@ export default function SceneRenderer({
                         <SceneNode
                             state={state}
                         >
-                            <SceneElement>
-                                <Component
-                                    state={state}
-                                    context={context}
-                                    {...element.props}
-                                />
-                            </SceneElement>
+                            <Component
+                                state={state}
+                                context={context}
+                                {...element.props}
+                            />
                         </SceneNode>
                     </AnimationElementProvider>
                 );

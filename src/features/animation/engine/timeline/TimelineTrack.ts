@@ -1,4 +1,4 @@
-import type { EasingType } from "../animation/utils/easing";
+import type { EasingType } from "../utils/easing";
 
 export type Keyframe = {
     frame: number;

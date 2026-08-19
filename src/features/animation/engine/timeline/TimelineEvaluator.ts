@@ -1,8 +1,8 @@
 import type { TimelineTrack } from "./TimelineTrack";
 import { resolveKeyframes } from "./KeyFrameResolver";
-import { calculateProgress } from "../animation/utils/progress";
-import { applyEasing } from "../animation/utils/easing";
-import { lerp } from "../animation/utils/lerp";
+import { calculateProgress } from "../utils/progress";
+import { applyEasing } from "../utils/easing";
+import { lerp } from "../utils/lerp";
 
 
 function evaluateTrack(
