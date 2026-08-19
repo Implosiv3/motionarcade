@@ -49,7 +49,7 @@ export type EasingType =
 export function applyEasing(
     progress: number,
     easing: EasingType = "linear"
-) {
+): number {
 
     switch(easing){
 
