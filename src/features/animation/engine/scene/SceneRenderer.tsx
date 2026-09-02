@@ -3,6 +3,7 @@ import {
 } from "@implosiv3/fr8mer-components";
 
 import SceneNode from "./SceneNode";
+import Scene3DLayer from "./Scene3DLayer";
 
 import { componentRegistry } from "../components/componentRegistry";
 import { resolveElementState } from "./state/resolveElementState";
@@ -15,6 +16,18 @@ import { isElementAlive } from "./state/isElementAlive";
 type SceneRendererProps = {
     elements: SceneElementData[];
     context: RenderContext;
+};
+
+export type  ResolvedSceneElement = {
+    element: SceneElementData;
+    definition: {
+        component: React.ComponentType<any>;
+        renderer: "2d" | "3d";
+    };
+    state: ReturnType<typeof resolveElementState>;
+    animationState: ReturnType<
+        typeof resolveElementAnimationState
+    >;
 };
 
 export default function SceneRenderer({
@@ -30,94 +43,93 @@ export default function SceneRenderer({
             endFrame: element.endFrame,
         })),
     );
-    
+
+    const elements2D: ResolvedSceneElement[] = [];
+    const elements3D: ResolvedSceneElement[] = [];
+
+    for (const element of elements) {
+        const definition = componentRegistry.get(
+            element.type,
+        );
+
+        if (!definition) {
+            continue;
+        }
+
+        const state = resolveElementState(
+            element,
+            context,
+        );
+
+        if (!isElementAlive(element, context.frame)) {
+            continue;
+        }
+
+        if (state.transform.visible === false) {
+            continue;
+        }
+
+        const animationState =
+            resolveElementAnimationState(
+                element,
+                context,
+            );
+
+        const renderedElement = {
+            element,
+            definition,
+            state,
+            animationState,
+        };
+
+        if (definition.renderer === "3d") {
+            elements3D.push(renderedElement);
+        } else {
+            elements2D.push(renderedElement);
+        }
+    }
+
     return (
         <>
-            {elements.map((element) => {
-                const state = resolveElementState(
+            {/* 2D */}
+
+            {elements2D.map(
+                ({
                     element,
-                    context,
-                );
+                    definition,
+                    state,
+                    animationState,
+                }) => {
+                    const Component =
+                        definition.component;
 
-                console.log(
-                    "ELEMENT",
-                    element.id,
-                    "frame:",
-                    context.frame,
-                    "life:",
-                    element.startFrame,
-                    element.endFrame,
-                    "alive:",
-                    context.frame >= element.startFrame &&
-                    context.frame < element.endFrame,
-                );
-
-                if (!isElementAlive(element, context.frame)) {
-                    return null;
-                }
-
-                if (state.transform.visible === false) {
-                    return null;
-                }
-
-                const animationState =
-                    resolveElementAnimationState(
-                        element,
-                        context,
-                    );
-
-                // /*
-                //  * Group
-                //  */
-                // if (
-                //     element.children &&
-                //     element.children.length
-                // ) {
-                //     return (
-                //         <AnimationElementProvider
-                //             key={element.id}
-                //             value={animationState}
-                //         >
-                //             <SceneNode
-                //                 state={state}
-                //             >
-                //                 <SceneRenderer
-                //                     elements={element.children}
-                //                     context={context}
-                //                 />
-                //             </SceneNode>
-                //         </AnimationElementProvider>
-                //     );
-                // }
-
-                /*
-                 * Single component
-                 */
-                const Component = componentRegistry.get(
-                    element.type,
-                );
-
-                if (!Component) {
-                    return null;
-                }
-
-                return (
-                    <AnimationElementProvider
-                        key={element.id}
-                        value={animationState}
-                    >
-                        <SceneNode
-                            state={state}
+                    return (
+                        <AnimationElementProvider
+                            key={element.id}
+                            value={animationState}
                         >
-                            <Component
+                            <SceneNode
                                 state={state}
-                                context={context}
-                                {...element.props}
-                            />
-                        </SceneNode>
-                    </AnimationElementProvider>
-                );
-            })}
+                            >
+                                <Component
+                                    state={state}
+                                    context={context}
+                                    {...element.props}
+                                />
+                            </SceneNode>
+                        </AnimationElementProvider>
+                    );
+                },
+            )}
+
+            {/* 3D */}
+
+            {elements3D.length > 0 && (
+                <Scene3DLayer
+                    elements={elements3D}
+                    context={context}
+                />
+            )}
         </>
     );
 }

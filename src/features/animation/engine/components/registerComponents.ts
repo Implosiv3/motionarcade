@@ -1,23 +1,44 @@
 import { componentRegistry } from "./componentRegistry";
-import { DiscordMessage, BookingReview, SimpleProgressBar } from "@implosiv3/fr8mer-components"
+import {
+    DiscordMessage,
+    BookingReview,
+    SimpleProgressBar,
+} from "@implosiv3/fr8mer-components";
+import { RipPhoto } from "../../../../components/3d/RipPhoto";
 
 
-export function registerComponents(){
+export function registerComponents() {
 
     componentRegistry.set(
-        // TODO: Change to 'SimpleProgressBar' (?)
         "ProgressBar",
-        SimpleProgressBar
+        {
+            component: SimpleProgressBar,
+            renderer: "2d",
+        }
     );
 
     componentRegistry.set(
         "DiscordMessage",
-        DiscordMessage
-    )
+        {
+            component: DiscordMessage,
+            renderer: "2d",
+        }
+    );
 
     componentRegistry.set(
         "BookingReview",
-        BookingReview
+        {
+            component: BookingReview,
+            renderer: "2d",
+        }
+    );
+
+    componentRegistry.set(
+        "RipPhoto",
+        {
+            component: RipPhoto,
+            renderer: "3d"
+        }
     )
 
 }

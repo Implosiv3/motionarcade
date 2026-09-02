@@ -1,1 +1,11 @@
-export const componentRegistry = new Map<string,React.ComponentType<any>>();
+export type ComponentRenderer = "2d" | "3d";
+
+export type ComponentDefinition = {
+    component: React.ComponentType<any>;
+    renderer: ComponentRenderer;
+};
+
+export const componentRegistry = new Map<
+    string,
+    ComponentDefinition
+>();

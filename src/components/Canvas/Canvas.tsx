@@ -43,7 +43,13 @@ export default function Canvas({
     const previewWidth = 960;
     const previewHeight = 540;
 
-    const scale = previewWidth / scene.width;
+    // Forced to 16:9
+    // const scale = previewWidth / scene.width;
+
+    const scaleX = previewWidth / scene.width;
+    const scaleY = previewHeight / scene.height;
+
+    const scale = Math.min(scaleX, scaleY);
 
     useHtmlToPng2d(
         ref,
@@ -72,6 +78,7 @@ export default function Canvas({
                             width:scene.width,
                             height:scene.height,
                             transform:`scale(${scale})`,
+                            // transform:"none",
                             transformOrigin:"top left"
                         }}
                     >
