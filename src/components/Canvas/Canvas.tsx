@@ -30,7 +30,11 @@ import {
 import type {
     SceneData
 } from "../../features/animation/engine/scene/sceneTypes";
-import { useRef } from "react";
+
+import {
+    useEffect,
+    useRef
+} from "react";
 
 
 type CanvasProps = {
@@ -63,12 +67,15 @@ export default function Canvas({
     const ref =
         useRef<HTMLDivElement>(null);
 
+
     const previewWidth = 960;
     const previewHeight = 540;
+
 
     const scale =
         previewWidth /
         scene.width;
+
 
     const context =
         createRenderContext({
@@ -77,6 +84,73 @@ export default function Canvas({
             width: scene.width,
             height: scene.height,
         });
+
+
+    /*
+     * Debug the actual 2D element after
+     * React has applied its styles.
+     */
+
+    useEffect(() => {
+
+        if (!ref.current) {
+            return;
+        }
+
+
+        const rect =
+            ref.current.getBoundingClientRect();
+
+
+        const computed =
+            getComputedStyle(
+                ref.current
+            );
+
+
+        console.log(
+            "CANVAS 2D ELEMENT:",
+            {
+                sceneWidth:
+                    scene.width,
+
+                sceneHeight:
+                    scene.height,
+
+                scale,
+
+                inlineWidth:
+                    ref.current.style.width,
+
+                inlineHeight:
+                    ref.current.style.height,
+
+                inlineTransform:
+                    ref.current.style.transform,
+
+                computedWidth:
+                    computed.width,
+
+                computedHeight:
+                    computed.height,
+
+                computedTransform:
+                    computed.transform,
+
+                boundingWidth:
+                    rect.width,
+
+                boundingHeight:
+                    rect.height,
+            }
+        );
+
+    }, [
+        scene.width,
+        scene.height,
+        scale
+    ]);
+
 
     useHtmlToPng2d(
         ref,
@@ -89,6 +163,7 @@ export default function Canvas({
         }
     );
 
+
     return (
         <AnimationProvider
             value={{
@@ -97,6 +172,7 @@ export default function Canvas({
                 time: context.time,
             }}
         >
+
             <div className="canvas-wrapper">
 
                 <div className="canvas-container">
@@ -123,10 +199,12 @@ export default function Canvas({
                                     "top left"
                             }}
                         >
+
                             <Canvas2D
                                 scene={scene}
                                 context={context}
                             />
+
                         </div>
 
 
@@ -139,13 +217,17 @@ export default function Canvas({
 
                     </div>
 
+
                     <CanvasControls />
+
                     <AnimationControls />
+
                     <DownloadControls />
 
                 </div>
 
             </div>
+
         </AnimationProvider>
     );
 }

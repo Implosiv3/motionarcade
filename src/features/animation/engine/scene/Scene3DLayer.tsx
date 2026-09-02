@@ -1,3 +1,7 @@
+import {
+    useRef
+} from "react";
+
 import { Canvas } from "@react-three/fiber";
 import { OrthographicCamera } from "@react-three/drei";
 import * as THREE from "three";
@@ -27,10 +31,122 @@ type Scene3DLayerProps = {
 };
 
 
+function renderTargetToDataUrl(
+    gl: THREE.WebGLRenderer,
+    renderTarget: THREE.WebGLRenderTarget,
+    width: number,
+    height: number
+): string {
+
+    const pixels =
+        new Uint8Array(
+            width *
+            height *
+            4
+        );
+
+
+    gl.readRenderTargetPixels(
+        renderTarget,
+        0,
+        0,
+        width,
+        height,
+        pixels
+    );
+
+
+    const flippedPixels =
+        new Uint8ClampedArray(
+            pixels.length
+        );
+
+
+    const rowSize =
+        width *
+        4;
+
+
+    for (
+        let y = 0;
+        y < height;
+        y++
+    ) {
+
+        const sourceOffset =
+            y *
+            rowSize;
+
+        const targetOffset =
+            (height - 1 - y) *
+            rowSize;
+
+
+        flippedPixels.set(
+            pixels.subarray(
+                sourceOffset,
+                sourceOffset + rowSize
+            ),
+            targetOffset
+        );
+    }
+
+
+    const imageData =
+        new ImageData(
+            flippedPixels,
+            width,
+            height
+        );
+
+
+    const canvas =
+        document.createElement(
+            "canvas"
+        );
+
+
+    canvas.width =
+        width;
+
+    canvas.height =
+        height;
+
+
+    const context =
+        canvas.getContext(
+            "2d"
+        );
+
+
+    if (!context) {
+        throw new Error(
+            "Could not create 2D canvas context"
+        );
+    }
+
+
+    context.putImageData(
+        imageData,
+        0,
+        0
+    );
+
+
+    return canvas.toDataURL(
+        "image/png"
+    );
+}
+
+
 export default function Scene3DLayer({
     elements,
     context,
 }: Scene3DLayerProps) {
+
+    const cameraRef =
+        useRef<THREE.OrthographicCamera>(null);
+
 
     const width =
         context.width *
@@ -63,21 +179,8 @@ export default function Scene3DLayer({
 
                 onCreated={({
                     gl,
-                    scene,
-                    camera
+                    scene
                 }) => {
-
-                    console.log(
-                        "3D canvas:",
-                        gl.domElement.width,
-                        gl.domElement.height,
-                        "CSS:",
-                        gl.domElement.clientWidth,
-                        gl.domElement.clientHeight,
-                        "pixelRatio:",
-                        gl.getPixelRatio()
-                    );
-
 
                     gl.setClearColor(
                         0x000000,
@@ -89,21 +192,124 @@ export default function Scene3DLayer({
                         THREE.SRGBColorSpace;
 
 
+                    console.log(
+                        "3D RENDERER:",
+                        {
+                            width:
+                                gl.domElement.width,
+
+                            height:
+                                gl.domElement.height,
+
+                            clientWidth:
+                                gl.domElement.clientWidth,
+
+                            clientHeight:
+                                gl.domElement.clientHeight,
+
+                            pixelRatio:
+                                gl.getPixelRatio(),
+
+                            outputColorSpace:
+                                gl.outputColorSpace,
+
+                            toneMapping:
+                                gl.toneMapping,
+
+                            toneMappingExposure:
+                                gl.toneMappingExposure
+                        }
+                    );
+
+
                     registerExport3dCanvas(
                         async (
                             exportWidth,
                             exportHeight
                         ) => {
 
-                            const previousPixelRatio =
-                                gl.getPixelRatio();
+                            const camera =
+                                cameraRef.current;
 
 
-                            const previousWidth =
-                                gl.domElement.width;
+                            if (!camera) {
+                                throw new Error(
+                                    "3D export camera is not ready"
+                                );
+                            }
 
-                            const previousHeight =
-                                gl.domElement.height;
+
+                            /*
+                             * RenderTarget used only for
+                             * the export.
+                             */
+
+                            const renderTarget =
+                                new THREE.WebGLRenderTarget(
+                                    exportWidth,
+                                    exportHeight,
+                                    {
+                                        format:
+                                            THREE.RGBAFormat,
+
+                                        type:
+                                            THREE.UnsignedByteType,
+
+                                        depthBuffer:
+                                            true,
+
+                                        stencilBuffer:
+                                            false,
+                                    }
+                                );
+
+
+                            /*
+                             * Save renderer state.
+                             */
+
+                            const previousRenderTarget =
+                                gl.getRenderTarget();
+
+
+                            const previousViewport =
+                                new THREE.Vector4();
+
+                            gl.getViewport(
+                                previousViewport
+                            );
+
+
+                            const previousScissor =
+                                new THREE.Vector4();
+
+                            gl.getScissor(
+                                previousScissor
+                            );
+
+
+                            const previousScissorTest =
+                                gl.getScissorTest();
+
+
+                            /*
+                             * Save camera projection.
+                             */
+
+                            const previousLeft =
+                                camera.left;
+
+                            const previousRight =
+                                camera.right;
+
+                            const previousTop =
+                                camera.top;
+
+                            const previousBottom =
+                                camera.bottom;
+
+                            const previousZoom =
+                                camera.zoom;
 
 
                             let dataUrl: string;
@@ -112,17 +318,90 @@ export default function Scene3DLayer({
                             try {
 
                                 /*
-                                 * Render the 3D scene directly
-                                 * at the final export resolution.
+                                 * IMPORTANT:
+                                 *
+                                 * This is the actual
+                                 * OrthographicCamera
+                                 * used by the preview.
+                                 *
+                                 * Do not change its
+                                 * projection.
                                  */
 
-                                gl.setPixelRatio(1);
+                                camera.updateProjectionMatrix();
 
 
-                                gl.setDrawingBufferSize(
+                                console.log(
+                                    "3D EXPORT CAMERA:",
+                                    {
+                                        type:
+                                            camera.type,
+
+                                        left:
+                                            camera.left,
+
+                                        right:
+                                            camera.right,
+
+                                        top:
+                                            camera.top,
+
+                                        bottom:
+                                            camera.bottom,
+
+                                        zoom:
+                                            camera.zoom,
+
+                                        exportWidth,
+                                        exportHeight
+                                    }
+                                );
+
+
+                                /*
+                                 * Render at the requested
+                                 * export resolution.
+                                 */
+
+                                gl.setRenderTarget(
+                                    renderTarget
+                                );
+
+
+                                gl.setViewport(
+                                    0,
+                                    0,
                                     exportWidth,
-                                    exportHeight,
-                                    1
+                                    exportHeight
+                                );
+
+
+                                gl.setScissor(
+                                    0,
+                                    0,
+                                    exportWidth,
+                                    exportHeight
+                                );
+
+
+                                gl.setScissorTest(
+                                    false
+                                );
+
+
+                                /*
+                                 * Keep the same color
+                                 * pipeline as preview.
+                                 */
+
+                                gl.outputColorSpace =
+                                    THREE.SRGBColorSpace;
+
+
+                                gl.clear(
+                                    true,
+                                    true,
+                                    true
                                 );
 
 
@@ -133,34 +412,74 @@ export default function Scene3DLayer({
 
 
                                 dataUrl =
-                                    gl.domElement.toDataURL(
-                                        "image/png"
+                                    renderTargetToDataUrl(
+                                        gl,
+                                        renderTarget,
+                                        exportWidth,
+                                        exportHeight
                                     );
 
                             }
                             finally {
 
                                 /*
-                                 * Restore the preview
-                                 * drawing buffer.
+                                 * Restore renderer.
                                  */
 
-                                gl.setPixelRatio(
-                                    previousPixelRatio
+                                gl.setRenderTarget(
+                                    previousRenderTarget
                                 );
 
 
-                                gl.domElement.width =
-                                    previousWidth;
+                                gl.setViewport(
+                                    previousViewport
+                                );
 
-                                gl.domElement.height =
-                                    previousHeight;
 
+                                gl.setScissor(
+                                    previousScissor
+                                );
+
+
+                                gl.setScissorTest(
+                                    previousScissorTest
+                                );
+
+
+                                /*
+                                 * Restore camera.
+                                 */
+
+                                camera.left =
+                                    previousLeft;
+
+                                camera.right =
+                                    previousRight;
+
+                                camera.top =
+                                    previousTop;
+
+                                camera.bottom =
+                                    previousBottom;
+
+                                camera.zoom =
+                                    previousZoom;
+
+
+                                camera.updateProjectionMatrix();
+
+
+                                /*
+                                 * Restore preview.
+                                 */
 
                                 gl.render(
                                     scene,
                                     camera
                                 );
+
+
+                                renderTarget.dispose();
 
                             }
 
@@ -174,6 +493,8 @@ export default function Scene3DLayer({
             >
 
                 <OrthographicCamera
+                    ref={cameraRef}
+
                     makeDefault
 
                     position={[

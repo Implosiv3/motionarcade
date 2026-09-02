@@ -110,6 +110,45 @@ export async function htmlToPng2d(
             dataUrl2d
         );
 
+    console.log("2D EXPORT:", {
+        naturalWidth:
+            image2d.naturalWidth,
+
+        naturalHeight:
+            image2d.naturalHeight,
+
+        elementWidth:
+            ref.current.offsetWidth,
+
+        elementHeight:
+            ref.current.offsetHeight,
+
+        boundingWidth:
+            ref.current.getBoundingClientRect().width,
+
+        boundingHeight:
+            ref.current.getBoundingClientRect().height,
+
+        inlineTransform:
+            ref.current.style.transform,
+
+        computedTransform:
+            getComputedStyle(
+                ref.current
+            ).transform,
+
+        computedWidth:
+            getComputedStyle(
+                ref.current
+            ).width,
+
+        computedHeight:
+            getComputedStyle(
+                ref.current
+            ).height,
+
+        pixelRatio
+    });
 
     /*
      * The 2D image defines the
@@ -152,16 +191,24 @@ export async function htmlToPng2d(
 
 
     /*
-     * Ask Three.js to render directly
-     * at the final export resolution.
-     *
-     * There is no 960x540 bitmap
-     * being enlarged anymore.
+     * Render 3D at 2x the final
+     * export resolution.
      */
+    const renderScale = 1;
+
+    const renderWidth =
+        output.width *
+        renderScale;
+
+    const renderHeight =
+        output.height *
+        renderScale;
+
+
     const dataUrl3d =
         await render3d(
-            output.width,
-            output.height
+            renderWidth,
+            renderHeight
         );
 
 
@@ -172,13 +219,26 @@ export async function htmlToPng2d(
 
 
     /*
-     * The 3D image already has exactly
-     * the same resolution as the output.
+     * Downsample the 3D render
+     * from 2x to the final resolution.
      */
+    ctx.imageSmoothingEnabled =
+        true;
+
+    ctx.imageSmoothingQuality =
+        "high";
+
+
     ctx.drawImage(
         image3d,
         0,
-        0
+        0,
+        renderWidth,
+        renderHeight,
+        0,
+        0,
+        output.width,
+        output.height
     );
 
 

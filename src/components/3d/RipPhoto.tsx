@@ -329,8 +329,8 @@ export function RipPhoto({
     const sheet =
         useMemo(
             () => ({
-                width: 3,
-                height: 2,
+                width: 3 * 1,
+                height: 2 * 1,
 
                 widthSegments: 30,
                 heightSegments: 50,
