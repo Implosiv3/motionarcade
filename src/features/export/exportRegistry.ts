@@ -1,5 +1,6 @@
 import type { PngExportOptions } from "./exporters/htmlToPng2d";
 
+
 declare global {
     interface Window {
         exportPng?: (
@@ -8,9 +9,17 @@ declare global {
     }
 }
 
+
+type Export3dRenderer = (
+    width: number,
+    height: number
+) => Promise<string>;
+
+
 let exportNode: HTMLElement | null = null;
 
-let export3dCanvas: HTMLCanvasElement | null = null;
+let export3dRenderer: Export3dRenderer | null = null;
+
 
 export function registerExportPng(
     fn: (
@@ -24,6 +33,7 @@ export function registerExportPng(
     };
 }
 
+
 export function registerExportNode(
     node: HTMLElement
 ) {
@@ -33,6 +43,7 @@ export function registerExportNode(
         exportNode = null;
     };
 }
+
 
 export function getExportNode() {
 
@@ -45,17 +56,25 @@ export function getExportNode() {
     return exportNode;
 }
 
+
 export function registerExport3dCanvas(
-    canvas: HTMLCanvasElement
+    renderer: Export3dRenderer
 ) {
-    export3dCanvas = canvas;
+    export3dRenderer = renderer;
 
     return () => {
-        export3dCanvas = null;
+
+        if (
+            export3dRenderer === renderer
+        ) {
+            export3dRenderer = null;
+        }
+
     };
 }
 
+
 export function getExport3dCanvas() {
 
-    return export3dCanvas;
+    return export3dRenderer;
 }
