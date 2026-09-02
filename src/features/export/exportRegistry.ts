@@ -10,6 +10,8 @@ declare global {
 
 let exportNode: HTMLElement | null = null;
 
+let export3dCanvas: HTMLCanvasElement | null = null;
+
 export function registerExportPng(
     fn: (
         options?: PngExportOptions
@@ -41,5 +43,19 @@ export function getExportNode() {
     }
 
     return exportNode;
+}
 
+export function registerExport3dCanvas(
+    canvas: HTMLCanvasElement
+) {
+    export3dCanvas = canvas;
+
+    return () => {
+        export3dCanvas = null;
+    };
+}
+
+export function getExport3dCanvas() {
+
+    return export3dCanvas;
 }

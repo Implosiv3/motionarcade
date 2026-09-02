@@ -4,49 +4,111 @@ import {
 
 import SceneNode3D from "./SceneNode3D";
 
-import type { RenderContext } from "../renderer/RenderContext";
-import type { ResolvedSceneElement } from "./SceneRenderer";
+import {
+    componentRegistry
+} from "../components/componentRegistry";
+
+import {
+    resolveElementState
+} from "./state/resolveElementState";
+
+import {
+    resolveElementAnimationState
+} from "./state/resolveElementAnimationState";
+
+import {
+    isElementAlive
+} from "./state/isElementAlive";
+
+import type {
+    SceneElementData
+} from "./sceneTypes";
+
+import type {
+    RenderContext
+} from "../renderer/RenderContext";
+
 
 type Scene3DRendererProps = {
-    elements: ResolvedSceneElement[];
+    elements: SceneElementData[];
     context: RenderContext;
 };
+
 
 export default function Scene3DRenderer({
     elements,
     context,
 }: Scene3DRendererProps) {
+
     return (
         <>
-            {elements.map(
-                ({
-                    element,
-                    definition,
-                    state,
-                    animationState,
-                }) => {
-                    const Component =
-                        definition.component;
+            {elements.map((element) => {
 
-                    return (
-                        <AnimationElementProvider
-                            key={element.id}
-                            value={animationState}
+                const definition =
+                    componentRegistry.get(
+                        element.type
+                    );
+
+                if (!definition) {
+                    return null;
+                }
+
+                if (
+                    definition.renderer !==
+                    "3d"
+                ) {
+                    return null;
+                }
+
+                const state =
+                    resolveElementState(
+                        element,
+                        context
+                    );
+
+                if (
+                    !isElementAlive(
+                        element,
+                        context.frame
+                    )
+                ) {
+                    return null;
+                }
+
+                if (
+                    state.transform.visible ===
+                    false
+                ) {
+                    return null;
+                }
+
+                const animationState =
+                    resolveElementAnimationState(
+                        element,
+                        context
+                    );
+
+                const Component =
+                    definition.component;
+
+                return (
+                    <AnimationElementProvider
+                        key={element.id}
+                        value={animationState}
+                    >
+                        <SceneNode3D
+                            state={state}
+                            context={context}
                         >
-                            <SceneNode3D
+                            <Component
                                 state={state}
                                 context={context}
-                            >
-                                <Component
-                                    state={state}
-                                    context={context}
-                                    {...element.props}
-                                />
-                            </SceneNode3D>
-                        </AnimationElementProvider>
-                    );
-                },
-            )}
+                                {...element.props}
+                            />
+                        </SceneNode3D>
+                    </AnimationElementProvider>
+                );
+            })}
         </>
     );
 }

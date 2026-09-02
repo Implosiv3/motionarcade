@@ -3,15 +3,26 @@ import { OrthographicCamera } from "@react-three/drei";
 import * as THREE from "three";
 
 import Scene3DRenderer from "./Scene3DRenderer";
-import { SCENE_SCALE } from "./transform/sceneToThree";
 
-import type { RenderContext } from "../renderer/RenderContext";
-import type { ResolvedSceneElement } from "./SceneRenderer";
+import {
+    SCENE_SCALE
+} from "./transform/sceneToThree";
+
+import type {
+    RenderContext
+} from "../renderer/RenderContext";
+
+import type {
+    SceneElementData
+} from "./sceneTypes";
+import { registerExport3dCanvas } from "../../../export/exportRegistry";
+
 
 type Scene3DLayerProps = {
-    elements: ResolvedSceneElement[];
+    elements: SceneElementData[];
     context: RenderContext;
 };
+
 
 export default function Scene3DLayer({
     elements,
@@ -19,19 +30,20 @@ export default function Scene3DLayer({
 }: Scene3DLayerProps) {
 
     const width =
-        context.width * SCENE_SCALE;
+        context.width *
+        SCENE_SCALE;
 
     const height =
-        context.height * SCENE_SCALE;
+        context.height *
+        SCENE_SCALE;
 
     return (
         <div
             style={{
                 position: "absolute",
-                left: 0,
-                top: 0,
-                width: context.width,
-                height: context.height,
+                inset: 0,
+                width: "100%",
+                height: "100%",
                 pointerEvents: "none",
             }}
         >
@@ -42,22 +54,19 @@ export default function Scene3DLayer({
                     alpha: true,
                     preserveDrawingBuffer: true,
                 }}
-                // style={{
-                //     position: "absolute",
-                //     left: 0,
-                //     top: 0,
-                //     width: `${context.width}px`,
-                //     height: `${context.height}px`,
-                // }}
                 onCreated={({ gl }) => {
 
                     gl.setClearColor(
                         0x000000,
-                        0,
+                        0
                     );
 
                     gl.outputColorSpace =
                         THREE.SRGBColorSpace;
+
+                    registerExport3dCanvas(
+                        gl.domElement
+                    );
                 }}
             >
 
