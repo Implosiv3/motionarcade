@@ -1,3 +1,4 @@
+import type { AudioClip } from "../../../export/types/AudioClip";
 import type { TimelineTrack } from "../timeline/TimelineTrack";
 
 
@@ -34,4 +35,6 @@ export type SceneData = {
     duration: number;
 
     elements: SceneElementData[];
+
+    audio: AudioClip[];
 };

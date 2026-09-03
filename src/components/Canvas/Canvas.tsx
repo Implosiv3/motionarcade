@@ -155,7 +155,9 @@ export default function Canvas({
 
                     <AnimationControls />
 
-                    <DownloadControls />
+                    <DownloadControls
+                        scene={scene}
+                    />
 
                 </div>
 

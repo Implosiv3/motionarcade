@@ -326,5 +326,21 @@ export const testScene = {
                 }
             ]
         }
+    ],
+
+    /*
+    If the startFrame is out of the total
+    scene duration, it will not be played
+    in the final exported video.
+    */
+    audio: [
+        {
+            src: "/audio/whoosh.mp3",
+            startFrame: 0,
+        },
+        {
+            src: "/audio/pop.mp3",
+            startFrame: 15,
+        },
     ]
 };
