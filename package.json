@@ -1,7 +1,7 @@
 {
   "name": "motionarcade",
   "private": true,
-  "version": "0.3.11",
+  "version": "0.3.12",
   "description": "Website to generate animated and static motion elements with one click. Whatsapp messages, bubble pop ups, etc. Everything you can imaging, static or animated, ready to be downloaded to integrate in your videos.",
   "type": "module",
   "repository": {
@@ -22,7 +22,7 @@
     "@ffmpeg/ffmpeg": "^0.12.15",
     "@ffmpeg/util": "^0.12.2",
     "@gsap/react": "^2.1.2",
-    "@implosiv3/fr8mer-components": "^0.0.22",
+    "@implosiv3/fr8mer-components": "^0.0.28",
     "@react-three/drei": "^10.7.7",
     "@react-three/fiber": "^9.6.1",
     "fitty": "^2.4.2",
@@ -34,7 +34,7 @@
     "react-router-dom": "^7.16.0",
     "sass-embedded": "^1.100.0",
     "scss": "^0.2.4",
-    "three": "^0.184.0",
+    "three": "^0.185.1",
     "zustand": "^5.0.14"
   },
   "devDependencies": {

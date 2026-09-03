@@ -132,13 +132,60 @@ export const testScene = {
             tracks: [],
         },
         {
-            id: "like",
-            type: "Like",
+            id: "plane-image",
+            type: "PlaneImage",
             x: 1560,
             y: 240,
             props: {
-                photo_url:
-                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg6OlxdzbiRrCvXeSsUKpAx7D5iITnf7DIzW97G_mkgmJxPh_X2sMQUdi9&s=10",
+                image: "/instagramtooltip.png"
+            },
+            startFrame: 0,
+            endFrame: 120,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: [],
+        },
+        {
+            id: "voxelized-image",
+            type: "VoxelizedImage",
+            x: 360,
+            y: 240,
+            props: {
+                image: "/minecraft-sword.png"
+            },
+            startFrame: 0,
+            endFrame: 120,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: [],
+        },
+        {
+            id: "phone",
+            type: "Phone",
+            x: 560,
+            y: 240,
+            // props: {
+            //     image: "/minecraft-sword.png"
+            // },
+            startFrame: 0,
+            endFrame: 120,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: [],
+        },
+        {
+            id: "model-3d",
+            type: "Model3D",
+            x: 1360,
+            y: 240,
+            props: {
+                model: "/models/pancreas3d.fbx"
             },
             startFrame: 0,
             endFrame: 120,

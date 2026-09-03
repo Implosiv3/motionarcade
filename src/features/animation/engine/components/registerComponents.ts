@@ -5,7 +5,10 @@ import {
     SimpleProgressBar,
 } from "@implosiv3/fr8mer-components";
 import { RipPhoto } from "@implosiv3/fr8mer-components";
-import Like from "../../../../components/3d/Like";
+import { PlaneImage } from "@implosiv3/fr8mer-components";
+import { VoxelizedImage } from "@implosiv3/fr8mer-components";
+import { Phone } from "@implosiv3/fr8mer-components";
+import { Model3D } from "@implosiv3/fr8mer-components";
 
 
 export function registerComponents() {
@@ -43,9 +46,33 @@ export function registerComponents() {
     )
 
     componentRegistry.set(
-        "Like",
+        "PlaneImage",
         {
-            component: Like,
+            component: PlaneImage,
+            renderer: "3d"
+        }
+    )
+
+    componentRegistry.set(
+        "VoxelizedImage",
+        {
+            component: VoxelizedImage,
+            renderer: "3d"
+        }
+    )
+
+    componentRegistry.set(
+        "Phone",
+        {
+            component: Phone,
+            renderer: "3d"
+        }
+    )
+
+    componentRegistry.set(
+        "Model3D",
+        {
+            component: Model3D,
             renderer: "3d"
         }
     )
