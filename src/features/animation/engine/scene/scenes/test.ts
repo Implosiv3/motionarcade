@@ -274,6 +274,10 @@ export const testScene = {
             y:700,
             startFrame:0,
             endFrame:300,
+            anchor:{
+                x:0.5,
+                y:0.5
+            },
             tracks:[
                 {
                     property:"progress",
