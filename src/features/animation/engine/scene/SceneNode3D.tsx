@@ -37,11 +37,23 @@ export default function SceneNode3D({
                 position.y,
                 0,
             ]}
-            scale={transform.scale}
+            scale={[
+                transform.scale.x,
+                transform.scale.y,
+                1,
+            ]}
             rotation={[
-                0,
-                0,
-                transform.rotation * Math.PI / 180,
+                transform.rotation3d.x *
+                    Math.PI / 180,
+
+                transform.rotation3d.y *
+                    Math.PI / 180,
+
+                (
+                    transform.rotation +
+                    transform.rotation3d.z
+                ) *
+                    Math.PI / 180,
             ]}
         >
             {children}

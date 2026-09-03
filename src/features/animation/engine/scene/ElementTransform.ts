@@ -1,15 +1,28 @@
 export type ElementTransform = {
-    position:{
+    position: {
         x: number;
         y: number;
     };
 
-    offset:{
+    offset: {
         x: number;
         y: number;
     };
 
-    scale: number;
+    scale: {
+        x: number;
+        y: number;
+    };
+
     rotation: number;
+
+    rotation3d: {
+        x: number;
+        y: number;
+        z: number;
+    };
+
     opacity: number;
+
+    visible: boolean;
 };

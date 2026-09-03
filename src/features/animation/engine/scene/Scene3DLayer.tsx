@@ -2,8 +2,14 @@ import {
     useRef
 } from "react";
 
-import { Canvas } from "@react-three/fiber";
-import { OrthographicCamera } from "@react-three/drei";
+import {
+    Canvas
+} from "@react-three/fiber";
+
+import {
+    PerspectiveCamera
+} from "@react-three/drei";
+
 import * as THREE from "three";
 
 import Scene3DRenderer from "./Scene3DRenderer";
@@ -29,6 +35,26 @@ type Scene3DLayerProps = {
     elements: SceneElementData[];
     context: RenderContext;
 };
+
+
+const CAMERA_FOV = 50;
+
+
+function getCameraZ(
+    height: number
+): number {
+    const fovRadians =
+        CAMERA_FOV *
+        Math.PI /
+        180;
+
+    return (
+        height / 2
+    ) /
+    Math.tan(
+        fovRadians / 2
+    );
+}
 
 
 function renderTargetToDataUrl(
@@ -145,8 +171,13 @@ export default function Scene3DLayer({
 }: Scene3DLayerProps) {
 
     const cameraRef =
-        useRef<THREE.OrthographicCamera>(null);
+        useRef<THREE.PerspectiveCamera>(null);
 
+
+    /*
+     * Convert the composition dimensions
+     * into Three.js scene units.
+     */
 
     const width =
         context.width *
@@ -155,6 +186,16 @@ export default function Scene3DLayer({
     const height =
         context.height *
         SCENE_SCALE;
+
+
+    /*
+     * Position the perspective camera so that
+     * the visible vertical area matches the
+     * composition height.
+     */
+
+    const cameraZ =
+        getCameraZ(height);
 
 
     return (
@@ -190,11 +231,20 @@ export default function Scene3DLayer({
                     gl.outputColorSpace =
                         THREE.SRGBColorSpace;
 
+
                     registerExport3dCanvas(
                         async (
                             exportWidth,
                             exportHeight
                         ) => {
+
+                            const renderScale = 2;
+
+                            const renderWidth =
+                                exportWidth * renderScale;
+
+                            const renderHeight =
+                                exportHeight * renderScale;
 
                             const camera =
                                 cameraRef.current;
@@ -208,26 +258,19 @@ export default function Scene3DLayer({
 
 
                             /*
-                             * RenderTarget used only for
-                             * the export.
+                             * RenderTarget used only
+                             * for the export.
                              */
 
                             const renderTarget =
                                 new THREE.WebGLRenderTarget(
-                                    exportWidth,
-                                    exportHeight,
+                                    renderWidth,
+                                    renderHeight,
                                     {
-                                        format:
-                                            THREE.RGBAFormat,
-
-                                        type:
-                                            THREE.UnsignedByteType,
-
-                                        depthBuffer:
-                                            true,
-
-                                        stencilBuffer:
-                                            false,
+                                        format: THREE.RGBAFormat,
+                                        type: THREE.UnsignedByteType,
+                                        depthBuffer: true,
+                                        stencilBuffer: false,
                                     }
                                 );
 
@@ -261,23 +304,14 @@ export default function Scene3DLayer({
 
 
                             /*
-                             * Save camera projection.
+                             * Save camera state.
                              */
 
-                            const previousLeft =
-                                camera.left;
+                            const previousAspect =
+                                camera.aspect;
 
-                            const previousRight =
-                                camera.right;
-
-                            const previousTop =
-                                camera.top;
-
-                            const previousBottom =
-                                camera.bottom;
-
-                            const previousZoom =
-                                camera.zoom;
+                            const previousPositionZ =
+                                camera.position.z;
 
 
                             let dataUrl: string;
@@ -286,17 +320,23 @@ export default function Scene3DLayer({
                             try {
 
                                 /*
-                                 * IMPORTANT:
-                                 *
-                                 * This is the actual
-                                 * OrthographicCamera
-                                 * used by the preview.
-                                 *
-                                 * Do not change its
-                                 * projection.
+                                 * The export must use the
+                                 * same perspective camera,
+                                 * but with the aspect ratio
+                                 * of the requested output.
                                  */
 
+                                camera.aspect =
+                                    exportWidth /
+                                    exportHeight;
+
+                                camera.position.z =
+                                    getCameraZ(
+                                        height
+                                    );
+
                                 camera.updateProjectionMatrix();
+
 
                                 /*
                                  * Render at the requested
@@ -328,11 +368,6 @@ export default function Scene3DLayer({
                                     false
                                 );
 
-
-                                /*
-                                 * Keep the same color
-                                 * pipeline as preview.
-                                 */
 
                                 gl.outputColorSpace =
                                     THREE.SRGBColorSpace;
@@ -375,6 +410,13 @@ export default function Scene3DLayer({
                                     previousViewport
                                 );
 
+                                // gl.setViewport(
+                                //     0,
+                                //     0,
+                                //     renderWidth,
+                                //     renderHeight
+                                // );
+
 
                                 gl.setScissor(
                                     previousScissor
@@ -390,21 +432,11 @@ export default function Scene3DLayer({
                                  * Restore camera.
                                  */
 
-                                camera.left =
-                                    previousLeft;
+                                camera.aspect =
+                                    previousAspect;
 
-                                camera.right =
-                                    previousRight;
-
-                                camera.top =
-                                    previousTop;
-
-                                camera.bottom =
-                                    previousBottom;
-
-                                camera.zoom =
-                                    previousZoom;
-
+                                camera.position.z =
+                                    previousPositionZ;
 
                                 camera.updateProjectionMatrix();
 
@@ -432,7 +464,7 @@ export default function Scene3DLayer({
                 }}
             >
 
-                <OrthographicCamera
+                <PerspectiveCamera
                     ref={cameraRef}
 
                     makeDefault
@@ -440,23 +472,16 @@ export default function Scene3DLayer({
                     position={[
                         0,
                         0,
-                        10
+                        cameraZ
                     ]}
 
-                    left={
-                        -width / 2
+                    fov={
+                        CAMERA_FOV
                     }
 
-                    right={
-                        width / 2
-                    }
-
-                    top={
-                        height / 2
-                    }
-
-                    bottom={
-                        -height / 2
+                    aspect={
+                        width /
+                        height
                     }
 
                     near={0.1}

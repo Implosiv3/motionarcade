@@ -24,6 +24,18 @@ export function resolveElementState(
     const offsetY =
         evaluated["offset.y"] ?? 0;
 
+    const rotation3dX =
+        evaluated["rotation3d.x"] ??
+        defaultElementState.transform.rotation3d.x;
+
+    const rotation3dY =
+        evaluated["rotation3d.y"] ??
+        defaultElementState.transform.rotation3d.y;
+
+    const rotation3dZ =
+        evaluated["rotation3d.z"] ??
+        defaultElementState.transform.rotation3d.z;
+
     return {
         transform: {
             position: {
@@ -43,6 +55,12 @@ export function resolveElementState(
             rotation:
                 evaluated.rotation ??
                 defaultElementState.transform.rotation,
+
+            rotation3d: {
+                x: rotation3dX,
+                y: rotation3dY,
+                z: rotation3dZ,
+            },
 
             opacity:
                 evaluated.opacity ??

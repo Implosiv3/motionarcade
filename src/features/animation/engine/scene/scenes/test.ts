@@ -132,6 +132,23 @@ export const testScene = {
             tracks: [],
         },
         {
+            id: "like",
+            type: "Like",
+            x: 1560,
+            y: 240,
+            props: {
+                photo_url:
+                    "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSg6OlxdzbiRrCvXeSsUKpAx7D5iITnf7DIzW97G_mkgmJxPh_X2sMQUdi9&s=10",
+            },
+            startFrame: 0,
+            endFrame: 120,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: [],
+        },
+        {
             id:"bar",
             type:"ProgressBar",
             x: 960,
