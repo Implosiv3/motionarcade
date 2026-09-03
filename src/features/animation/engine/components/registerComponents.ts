@@ -4,7 +4,7 @@ import {
     BookingReview,
     SimpleProgressBar,
 } from "@implosiv3/fr8mer-components";
-import { RipPhoto } from "../../../../components/3d/RipPhoto";
+import { RipPhoto } from "@implosiv3/fr8mer-components";
 
 
 export function registerComponents() {
