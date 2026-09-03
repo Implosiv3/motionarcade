@@ -238,17 +238,8 @@ export default function Scene3DLayer({
                             exportHeight
                         ) => {
 
-                            const renderScale = 2;
-
-                            const renderWidth =
-                                exportWidth * renderScale;
-
-                            const renderHeight =
-                                exportHeight * renderScale;
-
                             const camera =
                                 cameraRef.current;
-
 
                             if (!camera) {
                                 throw new Error(
@@ -256,32 +247,31 @@ export default function Scene3DLayer({
                                 );
                             }
 
+                            /*
+                            * Render resolution.
+                            */
+                            const renderScale = 1;
+
+                            const renderWidth =
+                                exportWidth * renderScale;
+
+                            const renderHeight =
+                                exportHeight * renderScale;
 
                             /*
-                             * RenderTarget used only
-                             * for the export.
-                             */
+                            * Save renderer state.
+                            */
+                            const previousWidth =
+                                gl.domElement.width;
 
-                            const renderTarget =
-                                new THREE.WebGLRenderTarget(
-                                    renderWidth,
-                                    renderHeight,
-                                    {
-                                        format: THREE.RGBAFormat,
-                                        type: THREE.UnsignedByteType,
-                                        depthBuffer: true,
-                                        stencilBuffer: false,
-                                    }
-                                );
+                            const previousHeight =
+                                gl.domElement.height;
 
-
-                            /*
-                             * Save renderer state.
-                             */
+                            const previousPixelRatio =
+                                gl.getPixelRatio();
 
                             const previousRenderTarget =
                                 gl.getRenderTarget();
-
 
                             const previousViewport =
                                 new THREE.Vector4();
@@ -290,7 +280,6 @@ export default function Scene3DLayer({
                                 previousViewport
                             );
 
-
                             const previousScissor =
                                 new THREE.Vector4();
 
@@ -298,80 +287,81 @@ export default function Scene3DLayer({
                                 previousScissor
                             );
 
-
                             const previousScissorTest =
                                 gl.getScissorTest();
 
-
                             /*
-                             * Save camera state.
-                             */
-
+                            * Save camera state.
+                            */
                             const previousAspect =
                                 camera.aspect;
 
                             const previousPositionZ =
                                 camera.position.z;
 
-
                             let dataUrl: string;
-
 
                             try {
 
                                 /*
-                                 * The export must use the
-                                 * same perspective camera,
-                                 * but with the aspect ratio
-                                 * of the requested output.
-                                 */
-
+                                * Use the same PerspectiveCamera
+                                * as the preview.
+                                */
                                 camera.aspect =
-                                    exportWidth /
-                                    exportHeight;
+                                    renderWidth /
+                                    renderHeight;
 
                                 camera.position.z =
-                                    getCameraZ(
-                                        height
-                                    );
+                                    getCameraZ(height);
 
                                 camera.updateProjectionMatrix();
 
-
                                 /*
-                                 * Render at the requested
-                                 * export resolution.
-                                 */
-
+                                * Render directly to the WebGL canvas.
+                                */
                                 gl.setRenderTarget(
-                                    renderTarget
+                                    null
                                 );
 
+                                /*
+                                * Disable the preview DPR temporarily.
+                                *
+                                * Otherwise dpr={4} would multiply
+                                * the export resolution again.
+                                */
+                                gl.setPixelRatio(1);
+
+                                gl.setSize(
+                                    renderWidth,
+                                    renderHeight,
+                                    false
+                                );
 
                                 gl.setViewport(
                                     0,
                                     0,
-                                    exportWidth,
-                                    exportHeight
+                                    renderWidth,
+                                    renderHeight
                                 );
-
 
                                 gl.setScissor(
                                     0,
                                     0,
-                                    exportWidth,
-                                    exportHeight
+                                    renderWidth,
+                                    renderHeight
                                 );
-
 
                                 gl.setScissorTest(
                                     false
                                 );
 
-
                                 gl.outputColorSpace =
                                     THREE.SRGBColorSpace;
 
+                                gl.setClearColor(
+                                    0x000000,
+                                    0
+                                );
 
                                 gl.clear(
                                     true,
@@ -379,59 +369,57 @@ export default function Scene3DLayer({
                                     true
                                 );
 
-
                                 gl.render(
                                     scene,
                                     camera
                                 );
 
-
+                                /*
+                                * IMPORTANT:
+                                *
+                                * Get the PNG directly from the
+                                * WebGL canvas.
+                                */
                                 dataUrl =
-                                    renderTargetToDataUrl(
-                                        gl,
-                                        renderTarget,
-                                        exportWidth,
-                                        exportHeight
+                                    gl.domElement.toDataURL(
+                                        "image/png"
                                     );
 
                             }
                             finally {
 
                                 /*
-                                 * Restore renderer.
-                                 */
+                                * Restore renderer state.
+                                */
+                                gl.setPixelRatio(
+                                    previousPixelRatio
+                                );
+
+                                gl.setSize(
+                                    previousWidth,
+                                    previousHeight,
+                                    false
+                                );
 
                                 gl.setRenderTarget(
                                     previousRenderTarget
                                 );
 
-
                                 gl.setViewport(
                                     previousViewport
                                 );
-
-                                // gl.setViewport(
-                                //     0,
-                                //     0,
-                                //     renderWidth,
-                                //     renderHeight
-                                // );
-
 
                                 gl.setScissor(
                                     previousScissor
                                 );
 
-
                                 gl.setScissorTest(
                                     previousScissorTest
                                 );
 
-
                                 /*
-                                 * Restore camera.
-                                 */
-
+                                * Restore camera.
+                                */
                                 camera.aspect =
                                     previousAspect;
 
@@ -440,24 +428,16 @@ export default function Scene3DLayer({
 
                                 camera.updateProjectionMatrix();
 
-
                                 /*
-                                 * Restore preview.
-                                 */
-
+                                * Restore preview.
+                                */
                                 gl.render(
                                     scene,
                                     camera
                                 );
-
-
-                                renderTarget.dispose();
-
                             }
 
-
                             return dataUrl;
-
                         }
                     );
 
