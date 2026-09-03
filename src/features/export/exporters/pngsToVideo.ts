@@ -110,10 +110,6 @@ export async function exportPngsToVideo({
             throw new Error("No visible pixels found.");
         }
 
-        ffmpeg.on("log", ({ message }) => {
-            console.log(message);
-        });
-
         await ffmpeg.exec([
             "-y",
             "-i",

@@ -2,28 +2,43 @@ import {
     AnimationElementProvider,
 } from "@implosiv3/fr8mer-components";
 
-import SceneNode from "./SceneNode";
+import SceneNode3D from "./SceneNode3D";
 
-import { componentRegistry } from "../components/componentRegistry";
-import { resolveElementState } from "./state/resolveElementState";
-import { resolveElementAnimationState } from "./state/resolveElementAnimationState";
+import {
+    componentRegistry
+} from "../components/componentRegistry";
 
-import type { SceneElementData } from "./sceneTypes";
-import type { RenderContext } from "../renderer/RenderContext";
+import {
+    resolveElementState
+} from "./state/resolveElementState";
 
-import { isElementAlive } from "./state/isElementAlive";
+import {
+    resolveElementAnimationState
+} from "./state/resolveElementAnimationState";
 
-type SceneRendererProps = {
+import {
+    isElementAlive
+} from "./state/isElementAlive";
+
+import type {
+    SceneElementData
+} from "./sceneTypes";
+
+import type {
+    RenderContext
+} from "../renderer/RenderContext";
+
+
+type Scene3DRendererProps = {
     elements: SceneElementData[];
     context: RenderContext;
-    renderer: "2d" | "3d";
 };
 
-export default function SceneRenderer({
+
+export default function Scene3DRenderer({
     elements,
     context,
-    renderer,
-}: SceneRendererProps) {
+}: Scene3DRendererProps) {
 
     return (
         <>
@@ -40,7 +55,7 @@ export default function SceneRenderer({
 
                 if (
                     definition.renderer !==
-                    renderer
+                    "3d"
                 ) {
                     return null;
                 }
@@ -81,15 +96,16 @@ export default function SceneRenderer({
                         key={element.id}
                         value={animationState}
                     >
-                        <SceneNode
+                        <SceneNode3D
                             state={state}
+                            context={context}
                         >
                             <Component
                                 state={state}
                                 context={context}
                                 {...element.props}
                             />
-                        </SceneNode>
+                        </SceneNode3D>
                     </AnimationElementProvider>
                 );
             })}
