@@ -4,4 +4,4 @@ Website to generate animated and static motion elements with one click. Whatsapp
 
 This project will be scraped by the `xxx` project.
 
-![Motion Arcade web](https://i.makeagif.com/media/7-21-2026/my8Qan.gif)
+![Motion Arcade](https://i.ibb.co/LDxyQzzn/animation80-ezgif-com-video-to-gif-converter.gif)
