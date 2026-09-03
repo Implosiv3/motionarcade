@@ -187,40 +187,8 @@ export default function Scene3DLayer({
                         0
                     );
 
-
                     gl.outputColorSpace =
                         THREE.SRGBColorSpace;
-
-
-                    console.log(
-                        "3D RENDERER:",
-                        {
-                            width:
-                                gl.domElement.width,
-
-                            height:
-                                gl.domElement.height,
-
-                            clientWidth:
-                                gl.domElement.clientWidth,
-
-                            clientHeight:
-                                gl.domElement.clientHeight,
-
-                            pixelRatio:
-                                gl.getPixelRatio(),
-
-                            outputColorSpace:
-                                gl.outputColorSpace,
-
-                            toneMapping:
-                                gl.toneMapping,
-
-                            toneMappingExposure:
-                                gl.toneMappingExposure
-                        }
-                    );
-
 
                     registerExport3dCanvas(
                         async (
@@ -329,34 +297,6 @@ export default function Scene3DLayer({
                                  */
 
                                 camera.updateProjectionMatrix();
-
-
-                                console.log(
-                                    "3D EXPORT CAMERA:",
-                                    {
-                                        type:
-                                            camera.type,
-
-                                        left:
-                                            camera.left,
-
-                                        right:
-                                            camera.right,
-
-                                        top:
-                                            camera.top,
-
-                                        bottom:
-                                            camera.bottom,
-
-                                        zoom:
-                                            camera.zoom,
-
-                                        exportWidth,
-                                        exportHeight
-                                    }
-                                );
-
 
                                 /*
                                  * Render at the requested

@@ -30,26 +30,6 @@ export default function SceneNode3D({
         height: context.height,
     });
 
-    console.log("3D NODE", {
-        elementPosition: {
-            x: transform.position.x,
-            y: transform.position.y,
-        },
-        offset: {
-            x: transform.offset.x,
-            y: transform.offset.y,
-        },
-        scenePosition: {
-            x,
-            y,
-        },
-        threePosition: position,
-        context: {
-            width: context.width,
-            height: context.height,
-        },
-    });
-
     return (
         <group
             position={[

@@ -110,46 +110,6 @@ export async function htmlToPng2d(
             dataUrl2d
         );
 
-    console.log("2D EXPORT:", {
-        naturalWidth:
-            image2d.naturalWidth,
-
-        naturalHeight:
-            image2d.naturalHeight,
-
-        elementWidth:
-            ref.current.offsetWidth,
-
-        elementHeight:
-            ref.current.offsetHeight,
-
-        boundingWidth:
-            ref.current.getBoundingClientRect().width,
-
-        boundingHeight:
-            ref.current.getBoundingClientRect().height,
-
-        inlineTransform:
-            ref.current.style.transform,
-
-        computedTransform:
-            getComputedStyle(
-                ref.current
-            ).transform,
-
-        computedWidth:
-            getComputedStyle(
-                ref.current
-            ).width,
-
-        computedHeight:
-            getComputedStyle(
-                ref.current
-            ).height,
-
-        pixelRatio
-    });
-
     /*
      * The 2D image defines the
      * final export resolution.
