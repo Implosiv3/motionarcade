@@ -337,10 +337,14 @@ export const testScene = {
         {
             src: "/audio/whoosh.mp3",
             startFrame: 0,
+            endFrame: 15,
+            volume: 3.0,
         },
         {
             src: "/audio/pop.mp3",
             startFrame: 15,
+            endFrame: 20,
+            volume: 1.0,
         },
     ]
 };
