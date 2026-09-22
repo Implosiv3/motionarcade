@@ -21,7 +21,7 @@ export const useCanvasStore = create<CanvasState>((set) => ({
   canvas: {
     aspectRatio: ASPECT_RATIOS[0],
     mode: 'light',
-    exportQuality: EXPORT_QUALITIES[2],
+    exportQuality: EXPORT_QUALITIES[0],
   },
 
   setAspectRatio: (ratio) =>

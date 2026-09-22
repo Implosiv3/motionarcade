@@ -1,14 +1,21 @@
+import type { RenderContext } from "../../features/animation/engine/renderer/RenderContext";
+import SceneRenderer from "../../features/animation/engine/scene/SceneRenderer";
+import type { SceneData } from "../../features/animation/engine/scene/sceneTypes";
+
 type Canvas2DProps = {
-    children?: React.ReactNode;
+    scene: SceneData;
+    context: RenderContext;
 };
 
-
 export default function Canvas2D({
-    children
+    scene,
+    context,
 }: Canvas2DProps) {
     return (
-        <>
-            {children}
-        </>
+        <SceneRenderer
+            elements={scene.elements}
+            context={context}
+            renderer="2d"
+        />
     );
 }

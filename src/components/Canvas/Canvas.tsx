@@ -1,86 +1,168 @@
 import "./Canvas.scss";
+
+import {
+    useCanvasStore
+} from "../../store/canvasStore";
+
 import Canvas2D from "./Canvas2D";
-import Canvas3D from "./Canvas3D";
-import { useRef, Children } from "react";
-import { useCanvasStore } from "../../store/canvasStore";
+import Scene3DLayer from "../../features/animation/engine/scene/Scene3DLayer";
+
 import CanvasControls from "./CanvasControls/CanvasControls";
 import AnimationControls from "./CanvasControls/AnimationControls/AnimationControls";
 import DownloadControls from "./CanvasControls/DownloadControls/DownloadControls";
-import { useHtmlToPng2d } from "../../features/export/hooks/useHtmlToPng2d";
 
+import {
+    useHtmlToPng2d
+} from "../../features/export/hooks/useHtmlToPng2d";
 
-type CanvasComponent = React.ComponentType<any> & {
-    canvas_mode?: "2d" | "3d";
-};
+import {
+    createRenderContext
+} from "../../features/animation/engine/renderer/createRenderContext";
+
+import {
+    useAnimationStore
+} from "../../features/animation/store/animationStore";
+
+import {
+    AnimationProvider
+} from "@implosiv3/fr8mer-components";
+
+import type {
+    SceneData
+} from "../../features/animation/engine/scene/sceneTypes";
+
+import {
+    useEffect,
+    useRef
+} from "react";
+
 
 type CanvasProps = {
-    // type?: "2d" | "3d";
-    children: React.ReactElement;
+    scene: SceneData;
 };
 
 
 export default function Canvas({
-    // type = "2d",
-    children,
+    scene
 }: CanvasProps) {
-    const aspectRatio = useCanvasStore(state => state.canvas.aspectRatio);
-    const mode = useCanvasStore(state => state.canvas.mode)
-    const exportQuality = useCanvasStore(state => state.canvas.exportQuality);
-    
-    const scale = 1.0
-    const ref = useRef<HTMLDivElement>(null);
 
-    const child = Children.only(children);
-    const Component = child.type as CanvasComponent;
+    const mode =
+        useCanvasStore(
+            state =>
+                state.canvas.mode
+        );
 
-    const canvas_mode = Component.canvas_mode ?? "2d";
-    // const canvas_mode = (children.type as any).canvas_mode ?? "2d";
+    const exportQuality =
+        useCanvasStore(
+            state =>
+                state.canvas.exportQuality
+        );
+
+    const frame =
+        useAnimationStore(
+            state =>
+                state.currentFrame
+        );
+
+    const ref =
+        useRef<HTMLDivElement>(null);
+
+
+    const previewWidth = 960;
+    const previewHeight = 540;
+
+
+    const scale =
+        previewWidth /
+        scene.width;
+
+
+    const context =
+        createRenderContext({
+            frame,
+            fps: scene.fps,
+            width: scene.width,
+            height: scene.height,
+        });
 
     useHtmlToPng2d(
         ref,
         {
-            pixelRatio: exportQuality.scaleFactor,
-            doTrimToBoundingBox: false
+            pixelRatio:
+                exportQuality.scaleFactor,
+
+            doTrimToBoundingBox:
+                false
         }
-    )
+    );
+
 
     return (
-        <div className="canvas-wrapper">
-            <CanvasControls />
-            <div className="canvas-container">
-                <div
-                    className={`canvas canvas-${mode}-mode`}
-                    id="canvas"
-                    style={{
-                        width: aspectRatio.width,
-                        height: aspectRatio.height,
-                        transform: `scale(${scale})`,
-                        transformOrigin: "center",
-                    }}
-                >
+        <AnimationProvider
+            value={{
+                frame: context.frame,
+                fps: context.fps,
+                time: context.time,
+            }}
+        >
+
+            <div className="canvas-wrapper">
+
+                <div className="canvas-container">
+
                     <div
-                        className="canvas-render-surface"
-                        ref={ref}
+                        className={`canvas canvas-${mode}-mode`}
+                        style={{
+                            width: previewWidth,
+                            height: previewHeight
+                        }}
                     >
-                        {
-                            canvas_mode === "2d"
-                            ? (
-                                <Canvas2D>
-                                    {children}
-                                </Canvas2D>
-                            )
-                            :
-                            (
-                                <Canvas3D>
-                                    {children}
-                                </Canvas3D>
-                            )
-                        }
+
+                        {/* 2D */}
+
+                        <div
+                            ref={ref}
+                            className="canvas-render-surface"
+                            style={{
+                                width: scene.width,
+                                height: scene.height,
+                                transform:
+                                    `scale(${scale})`,
+                                transformOrigin:
+                                    "top left"
+                            }}
+                        >
+
+                            <Canvas2D
+                                scene={scene}
+                                context={context}
+                            />
+
+                        </div>
+
+
+                        {/* 3D */}
+
+                        <Scene3DLayer
+                            elements={scene.elements}
+                            context={context}
+                        />
+
                     </div>
+
+
+                    <CanvasControls />
+
+                    <AnimationControls />
+
+                    <DownloadControls
+                        scene={scene}
+                    />
+
                 </div>
-                <AnimationControls />
-                <DownloadControls />
+
             </div>
-        </div>
+
+        </AnimationProvider>
     );
 }

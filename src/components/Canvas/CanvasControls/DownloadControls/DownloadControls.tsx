@@ -4,9 +4,18 @@ import { exportVideo } from "../../../../utils/export";
 import { useAnimationStore } from "../../../../features/animation/store/animationStore";
 import { waitAnimationRender } from "../../../../utils/animation";
 import DownloadExportQualitySelector from "./DownloadExportQualitySelector/DownloadExportQualitySelector";
+import { getExportNode } from "../../../../features/export/exportRegistry";
+import { withoutPreviewScale } from "../../../../features/export/utils/withoutPreviewScale";
+import type { SceneData } from "../../../../features/animation/engine/scene/sceneTypes";
 
 
-export default function DownloadControls() {
+type DownloadControlsProps = {
+    scene: SceneData;
+};
+
+export default function DownloadControls({
+    scene,
+}: DownloadControlsProps) {
     // TODO: Faked, by now
     const isAnimated = true
 
@@ -25,7 +34,13 @@ export default function DownloadControls() {
             return;
         }
 
-        const base64 = await window.exportPng();
+        const node = getExportNode();
+
+        const base64 =
+            await withoutPreviewScale(
+                node,
+                () => window.exportPng!()
+            );
 
         const link = document.createElement("a");
 
@@ -42,6 +57,10 @@ export default function DownloadControls() {
         }
 
         setFrame(0);
+    };
+
+    const handleExportVideo = () => {
+        exportVideo(scene.audio);
     };
 
     return (
@@ -71,7 +90,7 @@ export default function DownloadControls() {
                 <button
                     id="download-video"
                     className="action-button primary"
-                    onClick={exportVideo}
+                    onClick={handleExportVideo}
                 >
                     <Download size={18} />
                     &nbsp;
