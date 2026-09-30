@@ -13,6 +13,13 @@ import { Model3D } from "@implosiv3/fr8mer-components";
 
 export function registerComponents() {
 
+    // componentRegistry.set(
+    //     "Image",
+    //     {
+    //         component: Image
+    //     }
+    // )
+
     componentRegistry.set(
         "ProgressBar",
         {

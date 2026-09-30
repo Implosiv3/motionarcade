@@ -11,11 +11,9 @@ export const quizScene:SceneData = {
 
     height:1080,
 
+    fps:60,
 
-    fps:30,
-
-
-    duration:450,
+    duration:300,
 
 
 
@@ -27,264 +25,226 @@ export const quizScene:SceneData = {
          */
 
         {
-
-            id:"question-image",
-
-            type:"Image",
-
-
-            x:760,
-
-            y:120,
-
-
-            width:400,
-
-            height:400,
-
-
-            startFrame:0,
-
-            endFrame:300,
-
-
-            props:{
-
-                src:"/images/question.png"
-
+            id: "question_image_1",
+            type: "PlaneImage",
+            x: 960,
+            y: 300,
+            props: {
+                image:"/coin.png"
             },
-
-
-            animations:[
-
-                {
-
-                    type:"zoomIn",
-
-                    startFrame:0,
-
-                    endFrame:30,
-
-
-                    props:{
-
-                        fromScale:0.5,
-
-                        toScale:1
-
-                    }
-
-                }
-
-            ]
-
+            startFrame: 0,
+            endFrame: 150,
+            anchor: {
+                x: 0.5,
+                y: 0.5,
+            },
+            tracks: []
         },
-
-
+    ]
 
         /*
          * Grupo respuestas
          */
 
-        {
+    //     {
 
-            id:"answers",
+    //         id:"answers",
 
-            type:"group",
+    //         type:"group",
 
 
-            x:300,
+    //         x:300,
 
-            y:600,
+    //         y:600,
 
 
-            startFrame:60,
+    //         startFrame:60,
 
-            endFrame:300,
+    //         endFrame:300,
 
 
-            children:[
+    //         children:[
 
 
-                {
+    //             {
 
-                    id:"answer-a",
+    //                 id:"answer-a",
 
-                    type:"PopMessage",
+    //                 type:"PopMessage",
 
 
-                    x:0,
+    //                 x:0,
 
-                    y:0,
+    //                 y:0,
 
 
-                    startFrame:60,
+    //                 startFrame:60,
 
-                    endFrame:300,
+    //                 endFrame:300,
 
 
-                    props:{
+    //                 props:{
 
-                        text:"A) Madrid"
+    //                     text:"A) Madrid"
 
-                    }
+    //                 }
 
-                },
+    //             },
 
 
-                {
+    //             {
 
-                    id:"answer-b",
+    //                 id:"answer-b",
 
-                    type:"PopMessage",
+    //                 type:"PopMessage",
 
 
-                    x:0,
+    //                 x:0,
 
-                    y:100,
+    //                 y:100,
 
 
-                    startFrame:60,
+    //                 startFrame:60,
 
-                    endFrame:300,
+    //                 endFrame:300,
 
 
-                    props:{
+    //                 props:{
 
-                        text:"B) París"
+    //                     text:"B) París"
 
-                    }
+    //                 }
 
-                },
+    //             },
 
 
-                {
+    //             {
 
-                    id:"answer-c",
+    //                 id:"answer-c",
 
-                    type:"PopMessage",
+    //                 type:"PopMessage",
 
 
-                    x:0,
+    //                 x:0,
 
-                    y:200,
+    //                 y:200,
 
 
-                    startFrame:60,
+    //                 startFrame:60,
 
-                    endFrame:300,
+    //                 endFrame:300,
 
 
-                    props:{
+    //                 props:{
 
-                        text:"C) Roma"
+    //                     text:"C) Roma"
 
-                    }
+    //                 }
 
-                }
+    //             }
 
-            ]
+    //         ]
 
-        },
+    //     },
 
 
 
-        /*
-         * Barra de tiempo
-         */
+    //     /*
+    //      * Barra de tiempo
+    //      */
 
-        {
+    //     {
 
-            id:"timer",
+    //         id:"timer",
 
-            type:"ProgressBar",
+    //         type:"ProgressBar",
 
 
-            x:500,
+    //         x:500,
 
-            y:950,
+    //         y:950,
 
 
-            startFrame:150,
+    //         startFrame:150,
 
-            endFrame:300,
+    //         endFrame:300,
 
 
-            animations:[
+    //         animations:[
 
-                {
+    //             {
 
-                    type:"property",
+    //                 type:"property",
 
-                    property:"progress",
+    //                 property:"progress",
 
 
-                    startFrame:150,
+    //                 startFrame:150,
 
-                    endFrame:300,
+    //                 endFrame:300,
 
 
-                    props:{
+    //                 props:{
 
-                        from:0,
+    //                     from:0,
 
-                        to:1
+    //                     to:1
 
-                    }
+    //                 }
 
-                }
+    //             }
 
-            ]
+    //         ]
 
-        },
+    //     },
 
 
 
-        /*
-         * Respuesta correcta
-         */
+    //     /*
+    //      * Respuesta correcta
+    //      */
 
-        {
+    //     {
 
-            id:"correct-answer",
+    //         id:"correct-answer",
 
-            type:"PopMessage",
+    //         type:"PopMessage",
 
 
-            x:700,
+    //         x:700,
 
-            y:500,
+    //         y:500,
 
 
-            startFrame:300,
+    //         startFrame:300,
 
-            endFrame:450,
+    //         endFrame:450,
 
 
-            props:{
+    //         props:{
 
-                text:"Respuesta correcta: B"
+    //             text:"Respuesta correcta: B"
 
-            },
+    //         },
 
 
-            animations:[
+    //         animations:[
 
 
-                {
+    //             {
 
-                    type:"fadeIn",
+    //                 type:"fadeIn",
 
-                    startFrame:300,
+    //                 startFrame:300,
 
-                    endFrame:330
+    //                 endFrame:330
 
-                }
+    //             }
 
-            ]
+    //         ]
 
-        }
+    //     }
 
-    ]
+    // ]
 
 };
