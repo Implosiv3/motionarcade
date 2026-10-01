@@ -1,4 +1,6 @@
-import type { PngExportOptions } from "./exporters/htmlToPng2d";
+import type {
+    PngExportOptions,
+} from "./exporters/htmlToPng2d";
 
 
 export type PngExportResult =
@@ -10,6 +12,12 @@ declare global {
         exportPng?: (
             options?: PngExportOptions
         ) => Promise<PngExportResult>;
+
+        renderFrame?: (
+            frame: number
+        ) => Promise<void>;
+
+        exportFrame?: () => Promise<PngExportResult>;
     }
 }
 
@@ -20,9 +28,11 @@ type Export3dRenderer = (
 ) => Promise<PngExportResult>;
 
 
-let exportNode: HTMLElement | null = null;
+let exportNode:
+    HTMLElement | null = null;
 
-let export3dRenderer: Export3dRenderer | null = null;
+let export3dRenderer:
+    Export3dRenderer | null = null;
 
 
 export function registerExportPng(
@@ -34,6 +44,38 @@ export function registerExportPng(
 
     return () => {
         delete window.exportPng;
+    };
+}
+
+
+export function registerRenderFrame(
+    fn: (
+        frame: number
+    ) => Promise<void>
+) {
+    window.renderFrame = fn;
+
+    return () => {
+        if (
+            window.renderFrame === fn
+        ) {
+            delete window.renderFrame;
+        }
+    };
+}
+
+
+export function registerExportFrame(
+    fn: () => Promise<PngExportResult>
+) {
+    window.exportFrame = fn;
+
+    return () => {
+        if (
+            window.exportFrame === fn
+        ) {
+            delete window.exportFrame;
+        }
     };
 }
 
