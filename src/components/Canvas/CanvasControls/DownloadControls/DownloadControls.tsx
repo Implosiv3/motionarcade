@@ -30,24 +30,37 @@ export default function DownloadControls({
 
     const handleDownload = async () => {
         if (!window.exportPng) {
-            console.log('window.exportPng not detected');
+            console.log("window.exportPng not detected");
             return;
         }
 
         const node = getExportNode();
 
-        const base64 =
+        const bytes =
             await withoutPreviewScale(
                 node,
                 () => window.exportPng!()
             );
 
-        const link = document.createElement("a");
+        const blob = new Blob(
+            [bytes],
+            {
+                type: "image/png",
+            }
+        );
 
-        link.href = `data:image/png;base64,${base64}`;
+        const url =
+            URL.createObjectURL(blob);
+
+        const link =
+            document.createElement("a");
+
+        link.href = url;
         link.download = "component.png";
 
         link.click();
+
+        URL.revokeObjectURL(url);
     };
 
     const previewAnimation = async () => {
@@ -67,8 +80,8 @@ export default function DownloadControls({
         <div className="preview-actions">
             <button
                 id="download-png"
-                    className="action-button primary"
-                    onClick={handleDownload}
+                className="action-button primary"
+                onClick={handleDownload}
             >
                 <Download size={18} />
                 &nbsp;
