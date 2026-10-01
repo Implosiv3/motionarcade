@@ -1,11 +1,11 @@
 import Canvas from "../../components/Canvas/Canvas";
-import { quizScene } from "../../features/animation/engine/scene/scenes/quizScene";
+import { testScene } from "../../features/animation/engine/scene/scenes/testWithAudio";
 
 
 export default function MainView() {
   return (
     <Canvas
-      scene={quizScene}
+      scene={testScene}
     />
   );
 }

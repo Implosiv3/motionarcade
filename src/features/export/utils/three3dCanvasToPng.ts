@@ -1,6 +1,7 @@
 import * as THREE from "three";
 
-type Yhree3dCanvasToPngParams = {
+
+type Three3dCanvasToPngParams = {
     renderer: THREE.WebGLRenderer;
     scene: THREE.Scene;
     camera: THREE.Camera;
@@ -8,37 +9,91 @@ type Yhree3dCanvasToPngParams = {
     height: number;
 };
 
+
 /**
- * Function to capture the png from the 3d
- * three canvas.
- * @param param0 
- * @returns 
+ * Function to capture the PNG from the 3D
+ * Three.js canvas.
  */
-export function three3dCanvasToPng({
+export async function three3dCanvasToPng({
     renderer,
     scene,
     camera,
     width,
     height,
-}: Yhree3dCanvasToPngParams) {
-    // Keep original properties
+}: Three3dCanvasToPngParams): Promise<Uint8Array> {
+
+    // Keep original properties.
     const originalSize = new THREE.Vector2();
-    renderer.getSize(originalSize);
-    const perspectiveCamera = camera as THREE.PerspectiveCamera;
-    const originalAspect = perspectiveCamera.aspect;
 
-    // Set specific size and render
-    renderer.setSize(width, height);
-    perspectiveCamera.aspect = width / height;
+    renderer.getSize(
+        originalSize
+    );
+
+    const perspectiveCamera =
+        camera as THREE.PerspectiveCamera;
+
+    const originalAspect =
+        perspectiveCamera.aspect;
+
+
+    // Set specific size and render.
+    renderer.setSize(
+        width,
+        height
+    );
+
+    perspectiveCamera.aspect =
+        width / height;
+
     perspectiveCamera.updateProjectionMatrix();
-    renderer.render(scene, camera);
 
-    const png = renderer.domElement.toDataURL("image/png");
+    renderer.render(
+        scene,
+        camera
+    );
 
-    // Reset to original size
-    renderer.setSize(originalSize.x, originalSize.y);
-    perspectiveCamera.aspect = originalAspect;
+
+    // Export directly to a Blob instead of
+    // going through a Base64 data URL.
+    const blob =
+        await new Promise<Blob>(
+            (resolve, reject) => {
+
+                renderer.domElement.toBlob(
+                    (result) => {
+
+                        if (!result) {
+                            reject(
+                                new Error(
+                                    "Could not export 3D canvas to PNG"
+                                )
+                            );
+
+                            return;
+                        }
+
+                        resolve(result);
+                    },
+                    "image/png"
+                );
+
+            }
+        );
+
+
+    // Reset to original size.
+    renderer.setSize(
+        originalSize.x,
+        originalSize.y
+    );
+
+    perspectiveCamera.aspect =
+        originalAspect;
+
     perspectiveCamera.updateProjectionMatrix();
 
-    return png;
+
+    return new Uint8Array(
+        await blob.arrayBuffer()
+    );
 }

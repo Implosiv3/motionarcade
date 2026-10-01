@@ -1,11 +1,15 @@
 import type { PngExportOptions } from "./exporters/htmlToPng2d";
 
 
+export type PngExportResult =
+    Uint8Array;
+
+
 declare global {
     interface Window {
         exportPng?: (
             options?: PngExportOptions
-        ) => Promise<string>;
+        ) => Promise<PngExportResult>;
     }
 }
 
@@ -13,7 +17,7 @@ declare global {
 type Export3dRenderer = (
     width: number,
     height: number
-) => Promise<string>;
+) => Promise<PngExportResult>;
 
 
 let exportNode: HTMLElement | null = null;
@@ -24,7 +28,7 @@ let export3dRenderer: Export3dRenderer | null = null;
 export function registerExportPng(
     fn: (
         options?: PngExportOptions
-    ) => Promise<string>
+    ) => Promise<PngExportResult>
 ) {
     window.exportPng = fn;
 
