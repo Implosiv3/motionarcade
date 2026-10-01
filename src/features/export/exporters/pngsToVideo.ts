@@ -39,11 +39,8 @@ export async function exportPngsToVideo({
     const doTrimToBoundingBox = false;
 
     let globalMinX = Infinity;
-
     let globalMinY = Infinity;
-
     let globalMaxX = -Infinity;
-
     let globalMaxY = -Infinity;
 
     let totalRenderTime = 0;
@@ -69,11 +66,8 @@ export async function exportPngsToVideo({
             const bounds = await getPngBounds(bytes);
 
             globalMinX = Math.min(globalMinX, bounds.minX);
-
             globalMinY = Math.min(globalMinY, bounds.minY);
-
             globalMaxX = Math.max(globalMaxX, bounds.maxX);
-
             globalMaxY = Math.max(globalMaxY, bounds.maxY);
         }
 
@@ -188,9 +182,7 @@ export async function exportPngsToVideo({
             "-vf",
             "premultiply=inplace=1",
             "-c:v",
-            "prores_ks",
-            "-profile:v",
-            "4444",
+            "prores_aw",
             "-pix_fmt",
             "yuva444p10le",
         );
@@ -225,11 +217,8 @@ export async function exportPngsToVideo({
 
     if (doTrimToBoundingBox) {
         const cropWidth = globalMaxX - globalMinX + 1;
-
         const cropHeight = globalMaxY - globalMinY + 1;
-
         const evenWidth = cropWidth - (cropWidth % 2);
-
         const evenHeight = cropHeight - (cropHeight % 2);
 
         if (
@@ -248,9 +237,7 @@ export async function exportPngsToVideo({
             "-vf",
             `crop=${evenWidth}:${evenHeight}:${globalMinX}:${globalMinY}`,
             "-c:v",
-            "prores_ks",
-            "-profile:v",
-            "4444",
+            "prores_aw",
             "-pix_fmt",
             "yuva444p10le",
             "-map",
@@ -292,7 +279,6 @@ async function getPngBounds(bytes: Uint8Array) {
     const canvas = document.createElement("canvas");
 
     canvas.width = image.width;
-
     canvas.height = image.height;
 
     const ctx = canvas.getContext("2d")!;
@@ -309,11 +295,8 @@ async function getPngBounds(bytes: Uint8Array) {
     );
 
     let minX = width;
-
     let minY = height;
-
     let maxX = -1;
-
     let maxY = -1;
 
     for (let y = 0; y < height; y++) {
@@ -325,11 +308,8 @@ async function getPngBounds(bytes: Uint8Array) {
             }
 
             minX = Math.min(minX, x);
-
             minY = Math.min(minY, y);
-
             maxX = Math.max(maxX, x);
-
             maxY = Math.max(maxY, y);
         }
     }
