@@ -1,12 +1,8 @@
 import { type RefObject } from "react";
-
-import { toPng } from "html-to-image";
+import { toCanvas } from "html-to-image";
 
 import { trimTransparentPng } from "../utils/trimTransparentPng";
-
-import {
-    getExport3dCanvas
-} from "../exportRegistry";
+import { getExport3dCanvas } from "../exportRegistry";
 
 
 export interface PngExportOptions {
@@ -18,13 +14,11 @@ export interface PngExportOptions {
 function loadImage(
     dataUrl: string
 ): Promise<HTMLImageElement> {
-
     return new Promise(
         (
             resolve,
             reject
         ) => {
-
             const image =
                 new Image();
 
@@ -41,13 +35,128 @@ function loadImage(
 }
 
 
+function canvasToPngBytes(
+    canvas: HTMLCanvasElement
+): Promise<Uint8Array> {
+    return new Promise(
+        (
+            resolve,
+            reject
+        ) => {
+            canvas.toBlob(
+                async (blob) => {
+                    if (!blob) {
+                        reject(
+                            new Error(
+                                "Could not export canvas to PNG"
+                            )
+                        );
+                        return;
+                    }
+
+                    resolve(
+                        new Uint8Array(
+                            await blob.arrayBuffer()
+                        )
+                    );
+                },
+                "image/png"
+            );
+        }
+    );
+}
+
+
+function bytesToDataUrl(
+    bytes: Uint8Array
+): string {
+    let binary = "";
+
+    const chunkSize = 0x8000;
+
+    for (
+        let i = 0;
+        i < bytes.length;
+        i += chunkSize
+    ) {
+        const chunk =
+            bytes.subarray(
+                i,
+                Math.min(
+                    i + chunkSize,
+                    bytes.length
+                )
+            );
+
+        binary +=
+            String.fromCharCode(
+                ...chunk
+            );
+    }
+
+    return (
+        "data:image/png;base64," +
+        btoa(binary)
+    );
+}
+
+
+function dataUrlToBytes(
+    dataUrl: string
+): Uint8Array {
+    const base64 =
+        dataUrl.replace(
+            /^data:image\/png;base64,/,
+            ""
+        );
+
+    const binary =
+        atob(base64);
+
+    const bytes =
+        new Uint8Array(
+            binary.length
+        );
+
+    for (
+        let i = 0;
+        i < binary.length;
+        i++
+    ) {
+        bytes[i] =
+            binary.charCodeAt(i);
+    }
+
+    return bytes;
+}
+
+
+function pngResultToDataUrl(
+    result: Uint8Array | string
+): string {
+    if (
+        typeof result === "string"
+    ) {
+        return result.startsWith(
+            "data:image/png;base64,"
+        )
+            ? result
+            : `data:image/png;base64,${result}`;
+    }
+
+    return bytesToDataUrl(
+        result
+    );
+}
+
+
 export async function htmlToPng2d(
     ref: RefObject<HTMLElement | null>,
     {
         pixelRatio = 6,
         doTrimToBoundingBox = true,
     }: PngExportOptions = {}
-) {
+): Promise<Uint8Array> {
 
     if (!ref.current) {
         throw new Error(
@@ -56,17 +165,14 @@ export async function htmlToPng2d(
     }
 
 
-    /*
-     * Export the 2D layer.
-     */
-    const dataUrl2d =
-        await toPng(
+    const canvas =
+        await toCanvas(
             ref.current,
             {
                 pixelRatio,
                 backgroundColor:
                     "transparent",
-                cacheBust: true,
+                cacheBust: false,
             }
         );
 
@@ -75,63 +181,53 @@ export async function htmlToPng2d(
         getExport3dCanvas();
 
 
-    /*
-     * No 3D layer registered.
-     *
-     * Keep the original 2D export.
-     */
     if (!render3d) {
-
-        let dataUrl =
-            dataUrl2d;
-
 
         if (
             doTrimToBoundingBox
         ) {
+            const pngBytes =
+                await canvasToPngBytes(
+                    canvas
+                );
 
-            dataUrl =
+            const dataUrl =
+                bytesToDataUrl(
+                    pngBytes
+                );
+
+            const trimmedDataUrl =
                 await trimTransparentPng(
                     dataUrl
                 );
 
+            return dataUrlToBytes(
+                trimmedDataUrl
+            );
         }
 
-
-        return dataUrl.replace(
-            /^data:image\/png;base64,/,
-            ""
+        return canvasToPngBytes(
+            canvas
         );
     }
 
 
-    const image2d =
-        await loadImage(
-            dataUrl2d
-        );
-
-    /*
-     * The 2D image defines the
-     * final export resolution.
-     */
     const output =
         document.createElement(
             "canvas"
         );
 
-
     output.width =
-        image2d.naturalWidth;
+        canvas.width;
 
     output.height =
-        image2d.naturalHeight;
+        canvas.height;
 
 
     const ctx =
         output.getContext(
             "2d"
         );
-
 
     if (!ctx) {
         throw new Error(
@@ -140,20 +236,13 @@ export async function htmlToPng2d(
     }
 
 
-    /*
-     * Draw 2D first.
-     */
     ctx.drawImage(
-        image2d,
+        canvas,
         0,
         0
     );
 
 
-    /*
-     * Render 3D at 2x the final
-     * export resolution.
-     */
     const renderScale = 1;
 
     const renderWidth =
@@ -165,12 +254,19 @@ export async function htmlToPng2d(
         renderScale;
 
 
-    const dataUrl3d =
+    const data3d =
         await render3d(
             renderWidth,
             renderHeight
         );
 
+
+    const dataUrl3d =
+        pngResultToDataUrl(
+            data3d as
+                Uint8Array |
+                string
+        );
 
     const image3d =
         await loadImage(
@@ -178,10 +274,6 @@ export async function htmlToPng2d(
         );
 
 
-    /*
-     * Downsample the 3D render
-     * from 2x to the final resolution.
-     */
     ctx.imageSmoothingEnabled =
         true;
 
@@ -202,26 +294,31 @@ export async function htmlToPng2d(
     );
 
 
-    let dataUrl =
-        output.toDataURL(
-            "image/png"
-        );
-
-
     if (
         doTrimToBoundingBox
     ) {
+        const pngBytes =
+            await canvasToPngBytes(
+                output
+            );
 
-        dataUrl =
+        const dataUrl =
+            bytesToDataUrl(
+                pngBytes
+            );
+
+        const trimmedDataUrl =
             await trimTransparentPng(
                 dataUrl
             );
 
+        return dataUrlToBytes(
+            trimmedDataUrl
+        );
     }
 
 
-    return dataUrl.replace(
-        /^data:image\/png;base64,/,
-        ""
+    return canvasToPngBytes(
+        output
     );
 }
