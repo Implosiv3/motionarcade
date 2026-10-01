@@ -1,4 +1,5 @@
 import {
+    useEffect,
     useRef
 } from "react";
 
@@ -29,6 +30,13 @@ import type {
 import {
     registerExport3dCanvas
 } from "../../../export/exportRegistry";
+
+
+declare global {
+    interface Window {
+        renderReady?: boolean;
+    }
+}
 
 
 type Scene3DLayerProps = {
@@ -88,6 +96,56 @@ export default function Scene3DLayer({
 
     const cameraZ =
         getCameraZ(height);
+
+
+    useEffect(() => {
+
+        window.renderReady =
+            false;
+
+
+        let cancelled = false;
+
+
+        const waitForCamera =
+            () => {
+
+                if (cancelled) {
+                    return;
+                }
+
+
+                if (
+                    cameraRef.current
+                ) {
+
+                    window.renderReady =
+                        true;
+
+                    return;
+                }
+
+
+                requestAnimationFrame(
+                    waitForCamera
+                );
+
+            };
+
+
+        waitForCamera();
+
+
+        return () => {
+
+            cancelled = true;
+
+            window.renderReady =
+                false;
+
+        };
+
+    }, []);
 
 
     return (
@@ -347,10 +405,12 @@ export default function Scene3DLayer({
                                     scene,
                                     camera
                                 );
+
                             }
 
 
                             return dataUrl;
+
                         }
                     );
 
@@ -393,6 +453,7 @@ export default function Scene3DLayer({
                         5,
                         5
                     ]}
+
                     intensity={2}
                 />
 
@@ -403,6 +464,7 @@ export default function Scene3DLayer({
                         -5,
                         3
                     ]}
+
                     intensity={1}
                 />
 
