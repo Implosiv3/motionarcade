@@ -1,6 +1,5 @@
 import "./DownloadControls.scss";
 import { Image, Download, Play, Film } from "lucide-react";
-import { exportVideo } from "../../../../utils/export";
 import { useAnimationStore } from "../../../../features/animation/store/animationStore";
 import { waitAnimationRender } from "../../../../utils/animation";
 import DownloadExportQualitySelector from "./DownloadExportQualitySelector/DownloadExportQualitySelector";
@@ -72,10 +71,6 @@ export default function DownloadControls({
         setFrame(0);
     };
 
-    const handleExportVideo = () => {
-        exportVideo(scene.audio);
-    };
-
     return (
         <div className="preview-actions">
             <button
@@ -94,18 +89,6 @@ export default function DownloadControls({
                     onClick={previewAnimation}
                 >
                     <Play size={18} />
-                    &nbsp;
-                    <Film size={18} />
-                </button>
-            )}
-
-            {isAnimated && (
-                <button
-                    id="download-video"
-                    className="action-button primary"
-                    onClick={handleExportVideo}
-                >
-                    <Download size={18} />
                     &nbsp;
                     <Film size={18} />
                 </button>

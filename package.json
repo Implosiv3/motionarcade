@@ -19,8 +19,6 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@ffmpeg/ffmpeg": "^0.12.15",
-    "@ffmpeg/util": "^0.12.2",
     "@gsap/react": "^2.1.2",
     "@implosiv3/fr8mer-components": "^0.0.28",
     "@react-three/drei": "^10.7.7",
