@@ -1,1 +1,1 @@
-These are the scenes that we will be transformed into components appearing in the canvas and being rendered and animated.
+The scenes are now provided by the API. They have the same structure but is the API who is providing them.

@@ -3,26 +3,35 @@ import MainView from "../views/Main/MainView";
 import { Navigate } from "react-router-dom";
 import React from "react";
 
+
 const HomeRedirect = () =>
-  React.createElement(Navigate, {
-    to: "/routes",
-    replace: true,
-  });
+    React.createElement(
+        Navigate,
+        {
+            to: "/routes",
+            replace: true,
+        }
+    );
+
 
 export const routes = [
+
     {
         path: "/",
         name: "Home",
-        element: HomeRedirect
+        element: HomeRedirect,
     },
+
     {
         path: "/routes",
         name: "RoutesView",
         element: RoutesView,
     },
+
     {
-        path: "/main",
+        path: "/render/:sceneId",
         name: "MainView",
-        element: MainView
-    }
+        element: MainView,
+    },
+
 ];
