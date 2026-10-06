@@ -7,9 +7,9 @@ import AnimationDurationInput from "./AnimationDurationInput/AnimationDurationIn
 export default function AnimationControls() {
     return (
         <div className="animation-controls">
-            <AnimationFpsInput></AnimationFpsInput>
+            {/* <AnimationFpsInput></AnimationFpsInput>
             <AnimationDurationInput></AnimationDurationInput>
-            <AnimationFrameSelector></AnimationFrameSelector>
+            <AnimationFrameSelector></AnimationFrameSelector> */}
         </div>
     );
 }

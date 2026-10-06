@@ -32,7 +32,7 @@ import type {
 } from "../../features/animation/engine/scene/sceneTypes";
 
 import {
-    useEffect,
+    useLayoutEffect,
     useRef
 } from "react";
 
@@ -68,6 +68,28 @@ export default function Canvas({
         useRef<HTMLDivElement>(null);
 
 
+    /*
+     * The render config is the source of truth
+     * for the animation timing.
+     *
+     * totalFrames is the total number of
+     * discrete frames in the scene.
+     */
+    useLayoutEffect(() => {
+
+        useAnimationStore
+            .getState()
+            .configure(
+                scene.fps,
+                scene.totalFrames
+            );
+
+    }, [
+        scene.fps,
+        scene.totalFrames
+    ]);
+
+
     const previewWidth = 960;
     const previewHeight = 540;
 
@@ -84,6 +106,7 @@ export default function Canvas({
             width: scene.width,
             height: scene.height,
         });
+
 
     useHtmlToPng2d(
         ref,

@@ -32,7 +32,7 @@ export type SceneData = {
     height: number;
 
     fps: number;
-    duration: number;
+    totalFrames: number;
 
     elements: SceneElementData[];
 
