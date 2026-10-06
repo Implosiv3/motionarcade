@@ -5,3 +5,6 @@ Website to generate animated and static motion elements with one click. Whatsapp
 This project will be scraped by the `xxx` project.
 
 ![Motion Arcade](https://i.ibb.co/S7NzV118/animation82-ezgif-com-video-to-gif-converter.gif)
+
+
+Use `docker build -t motionarcade-web .` to build it. Use `docker run --rm -p 8080:80 motionarcade-web` to run it.
