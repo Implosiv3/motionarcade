@@ -1,11 +1,32 @@
 import Canvas from "../../components/Canvas/Canvas";
-import { testScene } from "../../features/animation/engine/scene/scenes/testWithAudio";
+
+import {
+    resolveScene
+} from "../../features/animation/engine/scene/resolveScene";
+
+import { testScene } from "../../features/animation/engine/scene/scenes/testScene";
+
+
+const renderScene =
+    resolveScene(
+        testScene
+    );
+
+console.log(
+    JSON.stringify(
+        renderScene,
+        null,
+        4
+    )
+);
 
 
 export default function MainView() {
-  return (
-    <Canvas
-      scene={testScene}
-    />
-  );
+
+    return (
+        <Canvas
+            scene={renderScene}
+        />
+    );
+
 }
