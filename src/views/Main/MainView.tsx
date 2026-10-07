@@ -8,10 +8,7 @@ import {
 } from "react-router-dom";
 
 import Canvas from "../../components/Canvas/Canvas";
-
-import type {
-    RenderConfig,
-} from "../../features/animation/engine/scene/sceneTypes";
+import type { RenderConfig } from "@implosiv3/motionarcade-types";
 
 
 const API_URL =

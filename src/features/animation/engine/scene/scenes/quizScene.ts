@@ -1,10 +1,8 @@
-import type {
-    SceneData
-} from "../../scene/sceneTypes";
+import type { RenderConfig } from "@implosiv3/motionarcade-types";
 
 
 
-export const quizScene:SceneData = {
+export const quizScene:RenderConfig = {
 
 
     width:1920,

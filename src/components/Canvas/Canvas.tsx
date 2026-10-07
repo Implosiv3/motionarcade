@@ -27,18 +27,15 @@ import {
     AnimationProvider
 } from "@implosiv3/fr8mer-components";
 
-import type {
-    SceneData
-} from "../../features/animation/engine/scene/sceneTypes";
-
 import {
     useLayoutEffect,
     useRef
 } from "react";
+import type { RenderConfig } from "@implosiv3/motionarcade-types";
 
 
 type CanvasProps = {
-    scene: SceneData;
+    scene: RenderConfig;
 };
 
 

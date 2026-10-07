@@ -8,13 +8,13 @@ import { componentRegistry } from "../components/componentRegistry";
 import { resolveElementState } from "./state/resolveElementState";
 import { resolveElementAnimationState } from "./state/resolveElementAnimationState";
 
-import type { SceneElementData } from "./sceneTypes";
 import type { RenderContext } from "../renderer/RenderContext";
 
 import { isElementAlive } from "./state/isElementAlive";
+import type { RenderElement } from "@implosiv3/motionarcade-types";
 
 type SceneRendererProps = {
-    elements: SceneElementData[];
+    elements: RenderElement[];
     context: RenderContext;
     renderer: "2d" | "3d";
 };

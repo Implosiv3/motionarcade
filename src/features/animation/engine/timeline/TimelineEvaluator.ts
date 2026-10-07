@@ -1,12 +1,12 @@
-import type { TimelineTrack } from "./TimelineTrack";
 import { resolveKeyframes } from "./KeyFrameResolver";
 import { calculateProgress } from "../utils/progress";
 import { applyEasing } from "../utils/easing";
 import { lerp } from "../utils/lerp";
+import type { RenderTimelineTrack } from "@implosiv3/motionarcade-types";
 
 
 function evaluateTrack(
-    track: TimelineTrack,
+    track: RenderTimelineTrack,
     frame: number
 ) {
     const resolved = resolveKeyframes(track.keyframes, frame);
@@ -36,7 +36,7 @@ function evaluateTrack(
 }
 
 export function evaluateTracks(
-    tracks: TimelineTrack[],
+    tracks: RenderTimelineTrack[],
     frame: number
 ){
     return tracks.reduce(

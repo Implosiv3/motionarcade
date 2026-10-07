@@ -1,7 +1,7 @@
-import type { SceneElementData } from "../sceneTypes";
+import type { RenderElement } from "@implosiv3/motionarcade-types";
 
 export function isElementAlive(
-    element: SceneElementData,
+    element: RenderElement,
     frame: number,
 ): boolean {
     return (

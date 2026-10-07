@@ -23,13 +23,10 @@ import type {
     RenderContext
 } from "../renderer/RenderContext";
 
-import type {
-    SceneElementData
-} from "./sceneTypes";
-
 import {
     registerExport3dCanvas
 } from "../../../export/exportRegistry";
+import type { RenderElement } from "@implosiv3/motionarcade-types";
 
 
 declare global {
@@ -40,7 +37,7 @@ declare global {
 
 
 type Scene3DLayerProps = {
-    elements: SceneElementData[];
+    elements: RenderElement[];
     context: RenderContext;
 };
 

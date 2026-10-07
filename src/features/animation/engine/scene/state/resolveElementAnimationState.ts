@@ -1,5 +1,5 @@
+import type { RenderElement } from "@implosiv3/motionarcade-types";
 import type { RenderContext } from "../../renderer/RenderContext";
-import type { SceneElementData } from "../sceneTypes";
 
 export type ElementAnimationState = {
     frame: number;
@@ -8,7 +8,7 @@ export type ElementAnimationState = {
 };
 
 export function resolveElementAnimationState(
-    element: SceneElementData,
+    element: RenderElement,
     context: RenderContext,
 ): ElementAnimationState {
     const duration = element.endFrame - element.startFrame;

@@ -1,4 +1,4 @@
-import type { Keyframe } from "./TimelineTrack";
+import type { RenderTimelineKeyframe } from "@implosiv3/motionarcade-types";
 
 export type ResolvedKeyframes = {
     previous: Keyframe;
@@ -6,7 +6,7 @@ export type ResolvedKeyframes = {
 };
 
 export function resolveKeyframes(
-    keyframes: Keyframe[],
+    keyframes: RenderTimelineKeyframe[],
     frame: number
 ): ResolvedKeyframes | null {
     const sorted = [...keyframes].sort((a, b) => a.frame - b.frame);

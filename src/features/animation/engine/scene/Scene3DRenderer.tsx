@@ -21,16 +21,13 @@ import {
 } from "./state/isElementAlive";
 
 import type {
-    SceneElementData
-} from "./sceneTypes";
-
-import type {
     RenderContext
 } from "../renderer/RenderContext";
+import type { RenderElement } from "@implosiv3/motionarcade-types";
 
 
 type Scene3DRendererProps = {
-    elements: SceneElementData[];
+    elements: RenderElement[];
     context: RenderContext;
 };
 

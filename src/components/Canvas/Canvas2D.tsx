@@ -1,9 +1,9 @@
+import type { RenderConfig } from "@implosiv3/motionarcade-types";
 import type { RenderContext } from "../../features/animation/engine/renderer/RenderContext";
 import SceneRenderer from "../../features/animation/engine/scene/SceneRenderer";
-import type { SceneData } from "../../features/animation/engine/scene/sceneTypes";
 
 type Canvas2DProps = {
-    scene: SceneData;
+    scene: RenderConfig;
     context: RenderContext;
 };
 

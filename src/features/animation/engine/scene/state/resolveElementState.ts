@@ -1,10 +1,10 @@
+import type { RenderElement } from "@implosiv3/motionarcade-types";
 import type { RenderContext } from "../../renderer/RenderContext";
 import { evaluateTracks } from "../../timeline/TimelineEvaluator";
-import type { SceneElementData } from "../sceneTypes";
 import { defaultElementState } from "./defaultElementState";
 
 export function resolveElementState(
-    element: SceneElementData,
+    element: RenderElement,
     context: RenderContext,
 ) {
     const evaluated = evaluateTracks(

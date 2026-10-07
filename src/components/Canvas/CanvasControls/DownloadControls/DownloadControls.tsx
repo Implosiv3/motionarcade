@@ -30,14 +30,11 @@ import {
 import {
     withoutPreviewScale,
 } from "../../../../features/export/utils/withoutPreviewScale";
-
-import type {
-    SceneData,
-} from "../../../../features/animation/engine/scene/sceneTypes";
+import type { RenderConfig } from "@implosiv3/motionarcade-types";
 
 
 type DownloadControlsProps = {
-    scene: SceneData;
+    scene: RenderConfig;
 };
 
 
