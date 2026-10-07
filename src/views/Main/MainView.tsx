@@ -9,13 +9,9 @@ import {
 
 import Canvas from "../../components/Canvas/Canvas";
 
-import {
-    resolveScene,
-} from "../../features/animation/engine/scene/resolveScene";
-
 import type {
-    SceneConfig,
-} from "../../features/animation/engine/scene/sceneConfigTypes";
+    RenderConfig,
+} from "../../features/animation/engine/scene/sceneTypes";
 
 
 const API_URL =
@@ -35,8 +31,8 @@ export default function MainView() {
     const [
         scene,
         setScene
-    ] = useState<SceneConfig | null>(
-        null
+    ] = useState<RenderConfig | null>(
+        null,
     );
 
 
@@ -44,7 +40,7 @@ export default function MainView() {
         error,
         setError
     ] = useState<string | null>(
-        null
+        null,
     );
 
 
@@ -55,7 +51,7 @@ export default function MainView() {
         ) {
 
             setError(
-                "Scene ID is missing."
+                "Scene ID is missing.",
             );
 
             return;
@@ -72,7 +68,7 @@ export default function MainView() {
 
                 const response =
                     await fetch(
-                        `${API_URL}/scenes/${sceneId}`
+                        `${API_URL}/scenes/${sceneId}`,
                     );
 
 
@@ -81,7 +77,7 @@ export default function MainView() {
                 ) {
 
                     throw new Error(
-                        `Failed to load scene: ${response.status} ${response.statusText}`
+                        `Failed to load scene: ${response.status} ${response.statusText}`,
                     );
                 }
 
@@ -89,7 +85,7 @@ export default function MainView() {
                 const data:
                     {
                         id: string;
-                        config: SceneConfig;
+                        render: RenderConfig;
                     } =
                     await response.json();
 
@@ -102,10 +98,11 @@ export default function MainView() {
 
 
                 setScene(
-                    data.config
+                    data.render,
                 );
 
-            } catch (
+            }
+            catch (
                 error
             ) {
 
@@ -119,7 +116,7 @@ export default function MainView() {
                 setError(
                     error instanceof Error
                         ? error.message
-                        : "Failed to load scene."
+                        : "Failed to load scene.",
                 );
             }
         }
@@ -135,7 +132,7 @@ export default function MainView() {
         };
 
     }, [
-        sceneId
+        sceneId,
     ]);
 
 
@@ -165,26 +162,10 @@ export default function MainView() {
     }
 
 
-    const renderScene =
-        resolveScene(
-            scene
-        );
-
-
-    console.log(
-        "RESOLVED SCENE:",
-        JSON.stringify(
-            renderScene,
-            null,
-            4
-        )
-    );
-
-
     return (
         <Canvas
             scene={
-                renderScene
+                scene
             }
         />
     );
